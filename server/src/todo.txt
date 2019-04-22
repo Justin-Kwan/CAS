@@ -1,0 +1,15 @@
+#ToDo:
+
+  - test passwordEncryptor? - don't know to
+  - handle multiple same usernames
+
+    - maybe use sockets to send message?
+    - on receiving message on client, refresh page with msg?
+
+(Before submit on client and for server as well)
+  - handle no input
+  - handle partial input
+    - document.getElement message for each error
+    - clear error var each time
+
+  - handle refresh of template page
