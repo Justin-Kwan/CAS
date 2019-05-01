@@ -21,14 +21,31 @@
 
   <form action="http://127.0.0.1:5000/signUp" method="post" onsubmit="this.submit(); this.reset(); return false;">
     <div class="form-group">
-      <input type="text" name="username" class="form-control col-md-3" placeholder="Username">
+      <input type="text" class="form-control vcheck col-md-3" name="username" id="username" placeholder="Username">
     </div>
     <div class="form-group">
-      <input type="password" name="password" class="form-control col-md-3" placeholder="Password">
+      <input type="password" class="form-control vcheck col-md-3" name="password" class="form-control col-md-3" id="password" placeholder="Password">
     </div>
-    <button type="submit" class="btn btn-primary">Sign Up</button>
+    <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Signup</button>
   </form>
 
 </body>
+
+<script>
+$('.vcheck').change(function() {
+
+    var username = $('#username').val();
+    var password = $('#password').val();
+
+    if (username == '' || password == '') {
+
+      $('#submit').attr('disabled', 'disabled');
+    }
+    else {
+
+      $('#submit').removeAttr('disabled');
+    }
+});
+</script>
 
 </html>

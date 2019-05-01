@@ -1,39 +1,36 @@
-from InputSanitizer import InputSanitizer
-from PasswordEncryptor import PasswordEncryptor
+from UsernameHandler import UsernameHandler
+from PasswordHandler import PasswordHandler
 from DatabaseAccessor import DatabaseAccessor
 
-inputSanitizer = InputSanitizer()
-passwordEncryptor = PasswordEncryptor()
+usernameHandler = UsernameHandler()
+passwordHandler = PasswordHandler()
 databaseAccessor = DatabaseAccessor()
 
 class InputHandler():
 
-    ERROR_DUPLICATE_USERNAME = 'DUPLICATE_USERNAME'
-    ERROR_EMPTY_FIELDS       = 'EMPTY_FIELDS'
-    ERROR_EMPTY_USERNAME     = 'EMPTY_USERNAME'
-    ERROR_EMPTY_PASSWORD     = 'EMPTY_PASSWORD'
-    SUCCESS_FIELDS_FILLED    = 'ALL_FIELDS_FILLED'
-    SUCCESS                  = 'SUCCESS'
+    ERROR_INVALID_USERNAME_CHARS = 'INVALID_USERNAME_CHARS'
+    ERROR_DUPLICATE_USERNAME     = 'DUPLICATE_USERNAME'
+    ERROR_EMPTY_USERNAME         = 'EMPTY_USERNAME'
+    ERROR_EMPTY_PASSWORD         = 'EMPTY_PASSWORD'
+    ERROR_EMPTY_FIELDS           = 'EMPTY_FIELDS'
+    SUCCESS                      = 'SUCCESS'
+    SUCCESS_FIELDS_FILLED        = 'ALL_FIELDS_FILLED'
 
     def handleUserInput(self, username, password):
-
         fieldEmptyCheckResult = self.handleEmptyFields(username, password)
         if(fieldEmptyCheckResult != self.SUCCESS_FIELDS_FILLED):
             return fieldEmptyCheckResult
 
-        sanitizedUsername = inputSanitizer.sanitizeUsername(str(username))
-        username = ''
-        hashedPassword = passwordEncryptor.encryptPassword(str(password))
-        password = ''
+        isUsernameCharsValid = usernameHandler.checkForInvalidUsernameChars(str(username))
+        if(isUsernameCharsValid == False):
+            return self.ERROR_INVALID_USERNAME_CHARS
 
-        doesUsernameExist = self.checkForExistingUsername(str(sanitizedUsername))
+        doesUsernameExist = usernameHandler.checkForExistingUsername(str(username))
         if(doesUsernameExist):
             return self.ERROR_DUPLICATE_USERNAME
 
-        databaseAccessor.insertUsernamePassword(sanitizedUsername, hashedPassword)
-        sanitizedUsername = ''
-        hashedPassword = ''
-
+        hashedPassword = passwordHandler.encryptPassword(str(password))
+        databaseAccessor.insertUsernamePassword(username, hashedPassword)
         return self.SUCCESS
 
     def handleEmptyFields(self, username, password):
@@ -48,23 +45,6 @@ class InputHandler():
             return self.ERROR_EMPTY_PASSWORD
         else:
             return self.SUCCESS_FIELDS_FILLED
-
-    def checkForExistingUsername(self, sanitizedUsername):
-        selectedUsername = databaseAccessor.selectUsername(sanitizedUsername)
-        parsedSelectedUsername = self.parseSelectedField(selectedUsername)
-
-        if(parsedSelectedUsername == sanitizedUsername):
-            return True
-        else:
-            return False
-
-    def parseSelectedField(self, selectedField):
-        selectedField = str(selectedField)
-
-        for currentChar in selectedField:
-            if(currentChar == '[' or currentChar == ']' or currentChar == '(' or currentChar == ')' or currentChar == ',' or currentChar == "'"):
-                selectedField = selectedField.replace(currentChar, '')
-        return selectedField
 
     def checkTextEmpty(self, text):
         if(text == ''):

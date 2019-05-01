@@ -11,8 +11,8 @@ cursor = connection.cursor()
 
 class DatabaseAccessor():
 
-    def selectUsername(self, sanitizedUsername):
-        cursor.execute("SELECT Username from Users WHERE Username = %s", (sanitizedUsername,))
+    def selectUsername(self, username):
+        cursor.execute("SELECT Username from Users WHERE Username = %s", (username,))
         selectedUsername = cursor.fetchone()
         return selectedUsername
 
@@ -21,10 +21,10 @@ class DatabaseAccessor():
         selectedPassword = cursor.fetchone()
         return selectedPassword
 
-    def insertUsernamePassword(self, sanitizedUsername, hashedPassword):
-        cursor.execute("INSERT INTO Users(Username, HashedPass) VALUES(%s, %s)", (sanitizedUsername, hashedPassword))
+    def insertUsernamePassword(self, username, hashedPassword):
+        cursor.execute("INSERT INTO Users(Username, HashedPass) VALUES(%s, %s)", (username, hashedPassword))
         connection.commit()
-        sanitizedUsername = ''
+        uername = ''
         hashedPassword = ''
 
     def clearDatabase(self):
