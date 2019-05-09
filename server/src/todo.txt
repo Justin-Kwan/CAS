@@ -7,4 +7,4 @@
   - move out input handler to another class and move the "loop" to runComponents() in another class (each for signup and login) and with username, password and inputHandlers
 
   - change button color?
-  - Need Google's Captcha
+  - Need Google Captcha
