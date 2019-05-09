@@ -13,11 +13,7 @@ class UsernameHandler():
     def checkForExistingUsername(self, username):
         selectedUsername = databaseAccessor.selectUsername(username)
         parsedSelectedUsername = self.parseSelectedField(selectedUsername)
-
-        if(parsedSelectedUsername == username):
-            return True
-        else:
-            return False
+        return parsedSelectedUsername == username
 
     def parseSelectedField(self, selectedField):
         selectedField = str(selectedField)
