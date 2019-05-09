@@ -1,51 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
+  <!doctype html>
+  <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script type="text/javascript" src="client/src/client.js"></script>
-    <title>CryptoCost.live</title>
-</head>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <title>CryptoCost.live</title>
+  </head>
 
-<body>
+  <body>
 
-  <div>Sign Up!</div>
-  <br></br>
+      <div class="row">
+          <div class="col-6">
+              <div class="img">
+                  <img src="../static/signup-img.png" style="width:400px; height:400px;">
+              </div>
+          </div>
 
-  <div class="alert alert-info">
-    <strong>Sorry, That Username Already Exists!</strong>
-  </div>
+          <div class="col-6">
 
-  <form action="http://127.0.0.1:5000/signUp" method="post" onsubmit="this.submit(); this.reset(); return false;">
-    <div class="form-group">
-      <input type="text" class="form-control vcheck col-md-3" name="username" id="username" placeholder="Username">
-    </div>
-    <div class="form-group">
-      <input type="password" class="form-control vcheck col-md-3" name="password" class="form-control col-md-3" id="password" placeholder="Password">
-    </div>
-    <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Signup</button>
-  </form>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
 
-</body>
+              <div class="d-inline-flex alert alert-info">
+                <strong>Sorry, That Username Already Exists!</strong>
+              </div>
 
-<script>
-$('.vcheck').change(function() {
+              <h1>Sign Up!</h1>
 
-    var username = $('#username').val();
-    var password = $('#password').val();
+              <form action="http://127.0.0.1:5000/signUp" method="post" onsubmit="this.submit(); this.reset(); return false;">
+                  <div class="form-group">
+                      <input type="text" class="form-control vcheck col-md-6" name="username" id="username" placeholder="Username">
+                  </div>
+                  <div class="form-group">
+                      <input type="password" class="form-control vcheck col-md-6" name="password" id="password" placeholder="Password">
+                  </div>
+                  <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Signup</button>
+              </form>
 
-    if (username == '' || password == '') {
+          </div>
 
-      $('#submit').attr('disabled', 'disabled');
-    }
-    else {
+      </div>
 
-      $('#submit').removeAttr('disabled');
-    }
-});
-</script>
+  </body>
 
-</html>
+  <script>
+      $('.vcheck').change(function() {
+
+          var username = $('#username').val();
+          var password = $('#password').val();
+
+          if (username == '' || password == '') {
+
+              $('#submit').attr('disabled', 'disabled');
+          } else {
+
+              $('#submit').removeAttr('disabled');
+          }
+      });
+  </script>
+
+  <style>
+      .img {
+          padding-left: 200px;
+          padding-right: 0px;
+          padding-bottom: 200px;
+          padding-top: 145px;
+      }
+  </style>
+
+  </html>

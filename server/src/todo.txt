@@ -3,10 +3,8 @@
 #Server Refactoring
 
   - test index.py determineRedirectPage() - CANNOT DO
+  - have username char limit (35)
+  - move out input handler to another class and move the "loop" to runComponents() in another class (each for signup and login) and with username, password and inputHandlers
 
-#Cleanup Signup Frontend
-
-  - align text boxes more to right
-  - make nice photoshop image of bitcoin, etc... to left
   - change button color?
   - Need Google's Captcha
