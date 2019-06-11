@@ -2,15 +2,8 @@
 
 #Server Refactoring
 
-  - test index.py determineRedirectPage() - CANNOT DO
-  - have username char limit (35) and password char limit
-  - validate password 2 times?
-  - move out input handler to another class and move the "loop" to runComponents() in another class (each for signup and login) and with username, password and inputHandlers
+  - double password confirmation?
+  - start working on login controller (eventually use json tokens)
 
   - change button color?
-  - set other html files to % instead of px
   - Need Google Captcha
-
-#Buglog
-
-  - weird characters in password

@@ -1,48 +1,18 @@
 import pytest
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
-from InputHandler import InputHandler
+from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
 
 inputHandler     = InputHandler()
 databaseAccessor = DatabaseAccessor()
-
-def test_handleUserInput():
-    assert inputHandler.handleUserInput('', '') == 'EMPTY_FIELDS'
-    assert inputHandler.handleUserInput('', 'password') == 'EMPTY_USERNAME'
-    assert inputHandler.handleUserInput('username', '') == 'EMPTY_PASSWORD'
-    databaseAccessor.insertUsernamePassword('username', 'password1')
-    assert inputHandler.handleUserInput('username', 'password1') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
-    assert inputHandler.handleUserInput('username', 'password') == 'SUCCESS'
-    databaseAccessor.clearDatabase()
-    assert inputHandler.handleUserInput('usern>ame', 'password') == 'INVALID_USERNAME_CHARS'
-    databaseAccessor.clearDatabase()
-    assert inputHandler.handleUserInput('-username', 'password') == 'INVALID_USERNAME_CHARS'
-    databaseAccessor.clearDatabase()
-    assert inputHandler.handleUserInput('username;', 'password') == 'INVALID_USERNAME_CHARS'
-    databaseAccessor.clearDatabase()
-    inputHandler.handleUserInput('Username', 'password')
-    assert inputHandler.handleUserInput('username', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
-    inputHandler.handleUserInput('username', 'password')
-    assert inputHandler.handleUserInput('Username', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
-    inputHandler.handleUserInput('UsErNAME', 'password')
-    assert inputHandler.handleUserInput('USERNAME', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
-    inputHandler.handleUserInput('USERNAME', 'password')
-    assert inputHandler.handleUserInput('username', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
 
 def test_checkTextEmpty():
     assert inputHandler.checkTextEmpty('Not Empty') == False
     assert inputHandler.checkTextEmpty('') == True
     assert inputHandler.checkTextEmpty('0987*') == False
 
-'''
-    Testing username and password length constraints for input validation
-'''
+# testing username and password length constraints for input validation
 def test_checkInputLength():
     # middle case
     assert inputHandler.checkInputLength('USERNAME', 'testusername') == True
@@ -54,8 +24,68 @@ def test_checkInputLength():
     assert inputHandler.checkInputLength('USERNAME', '') == False
     assert inputHandler.checkInputLength('USERNAME', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
 
+    assert inputHandler.checkInputLength('PASSWORD', 'usrnmmff') == True
+    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernam') == True
+    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu;') == False
+    assert inputHandler.checkInputLength('PASSWORD', 'usrnmdd') == False
+    assert inputHandler.checkInputLength('PASSWORD', '') == False
+    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu') == True
+    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
+
 def test_handleEmptyFields():
     assert inputHandler.handleEmptyFields('', '') == 'EMPTY_FIELDS'
     assert inputHandler.handleEmptyFields('', 'password') == 'EMPTY_USERNAME'
     assert inputHandler.handleEmptyFields('username', '') == 'EMPTY_PASSWORD'
     assert inputHandler.handleEmptyFields('username', 'password') == 'ALL_FIELDS_FILLED'
+
+def test_handleInputLengthChecks():
+    assert inputHandler.handleInputLengthChecks('NewUser123', 'testusername') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernam') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputHandler.handleInputLengthChecks('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;') == 'INVALID_USERNAME_LENGTH'
+    assert inputHandler.handleInputLengthChecks('', 'usrnmdd') == 'INVALID_USERNAME_LENGTH'
+    assert inputHandler.handleInputLengthChecks('User', '') == 'INVALID_USERNAME_LENGTH'
+    assert inputHandler.handleInputLengthChecks(',', 'testusernametestusernametestusernametestusernametestusernametestusername') == 'INVALID_USERNAME_LENGTH'
+    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestu') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestus') == 'INVALID_PASSWORD_LENGTH'
+    assert inputHandler.handleInputLengthChecks('usrnmm', 'passwor') == 'INVALID_PASSWORD_LENGTH'
+
+def test_checkForInvalidUsernameChars():
+    assert inputHandler.checkForInvalidUsernameChars("string2") == True
+    assert inputHandler.checkForInvalidUsernameChars("fake$username)") == False
+    assert inputHandler.checkForInvalidUsernameChars(")(*&^)") == False
+    assert inputHandler.checkForInvalidUsernameChars(")(*&^)textTest*&^%moretestis*fun';:") == False
+
+def test_parseSelectedField():
+    assert inputHandler.parseSelectedField('hello') == 'hello'
+    assert inputHandler.parseSelectedField("[(',hello')]") == 'hello'
+    assert inputHandler.parseSelectedField('[(,)') == ''
+
+def test_checkForExistingUsername():
+    databaseAccessor.clearDatabase()
+
+    databaseAccessor.insertUsernamePassword('randomename1', 'teddddstPassword1')
+    databaseAccessor.insertUsernamePassword('anotherrand0mName', 'testPawddassword2')
+    databaseAccessor.insertUsernamePassword('09876543', 'test')
+    databaseAccessor.insertUsernamePassword('johnnotrealperson', 'password123')
+    doesUsernameExist = inputHandler.checkForExistingUsername('09876543')
+    assert doesUsernameExist == True
+
+    databaseAccessor.clearDatabase()
+
+    databaseAccessor.insertUsernamePassword('robertH', 'teddddstPassword1')
+    databaseAccessor.insertUsernamePassword('william', 'testPawddassword2')
+    databaseAccessor.insertUsernamePassword('Johnathan', 'test')
+    databaseAccessor.insertUsernamePassword('randomguy', 'password123')
+    doesUsernameExist = inputHandler.checkForExistingUsername('johnathan')
+    assert doesUsernameExist == False
+
+    databaseAccessor.clearDatabase()
+
+    databaseAccessor.insertUsernamePassword('001', 'teddddstPassword1')
+    databaseAccessor.insertUsernamePassword('02000000009', 'testPawddassword2')
+    databaseAccessor.insertUsernamePassword('joe', 'test')
+    databaseAccessor.insertUsernamePassword('testname', 'password123')
+    doesUsernameExist = inputHandler.checkForExistingUsername('02000000009')
+    assert doesUsernameExist == True
+
+    databaseAccessor.clearDatabase()
