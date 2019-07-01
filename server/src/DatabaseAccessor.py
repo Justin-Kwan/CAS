@@ -21,10 +21,15 @@ class DatabaseAccessor():
         selectedPassword = cursor.fetchone()
         return selectedPassword
 
-    def insertUsernamePassword(self, username, hashedPassword):
-        cursor.execute("INSERT INTO Users(Username, HashedPass) VALUES(%s, %s)", (username, hashedPassword))
+    def selectUserId(self, userId):
+        cursor.execute("SELECT UserId from Users WHERE UserId = %s", (userId,))
+        selectedUserId = cursor.fetchone()
+        return selectedUserId
+
+    def insertUserInfo(self, username, hashedPassword, userId):
+        cursor.execute("INSERT INTO Users(Username, HashedPass, UserId) VALUES(%s, %s, %s)", (username, hashedPassword, userId))
         connection.commit()
-        uername = ''
+        username = ''
         hashedPassword = ''
 
     def clearDatabase(self):

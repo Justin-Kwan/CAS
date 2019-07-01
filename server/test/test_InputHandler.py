@@ -63,28 +63,28 @@ def test_parseSelectedField():
 def test_checkForExistingUsername():
     databaseAccessor.clearDatabase()
 
-    databaseAccessor.insertUsernamePassword('randomename1', 'teddddstPassword1')
-    databaseAccessor.insertUsernamePassword('anotherrand0mName', 'testPawddassword2')
-    databaseAccessor.insertUsernamePassword('09876543', 'test')
-    databaseAccessor.insertUsernamePassword('johnnotrealperson', 'password123')
+    databaseAccessor.insertUserInfo('randomename1', 'teddddstPassword1', 'testId')
+    databaseAccessor.insertUserInfo('anotherrand0mName', 'testPawddassword2', 'testId')
+    databaseAccessor.insertUserInfo('09876543', 'test', 'testId')
+    databaseAccessor.insertUserInfo('johnnotrealperson', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('09876543')
     assert doesUsernameExist == True
 
     databaseAccessor.clearDatabase()
 
-    databaseAccessor.insertUsernamePassword('robertH', 'teddddstPassword1')
-    databaseAccessor.insertUsernamePassword('william', 'testPawddassword2')
-    databaseAccessor.insertUsernamePassword('Johnathan', 'test')
-    databaseAccessor.insertUsernamePassword('randomguy', 'password123')
+    databaseAccessor.insertUserInfo('robertH', 'teddddstPassword1', 'testId')
+    databaseAccessor.insertUserInfo('william', 'testPawddassword2', 'testId')
+    databaseAccessor.insertUserInfo('Johnathan', 'test', 'testId')
+    databaseAccessor.insertUserInfo('randomguy', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('johnathan')
     assert doesUsernameExist == False
 
     databaseAccessor.clearDatabase()
 
-    databaseAccessor.insertUsernamePassword('001', 'teddddstPassword1')
-    databaseAccessor.insertUsernamePassword('02000000009', 'testPawddassword2')
-    databaseAccessor.insertUsernamePassword('joe', 'test')
-    databaseAccessor.insertUsernamePassword('testname', 'password123')
+    databaseAccessor.insertUserInfo('001', 'teddddstPassword1', 'testId')
+    databaseAccessor.insertUserInfo('02000000009', 'testPawddassword2', 'testId')
+    databaseAccessor.insertUserInfo('joe', 'test', 'testId')
+    databaseAccessor.insertUserInfo('testname', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('02000000009')
     assert doesUsernameExist == True
 
