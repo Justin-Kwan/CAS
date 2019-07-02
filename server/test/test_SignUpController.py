@@ -5,7 +5,7 @@ from SignUpController import SignUpController
 from DatabaseAccessor import DatabaseAccessor
 
 signUpController = SignUpController()
-databaseAccessor = DatabaseAccessor()
+DBA = DatabaseAccessor()
 
 def test_handleUserSignUp():
     # empty field(s) tests
@@ -18,7 +18,7 @@ def test_handleUserSignUp():
     assert signUpController.handleUserSignUp('username2', '        ') == 'SUCCESS'
     assert signUpController.handleUserSignUp('username3', '    )(*)    ') == 'SUCCESS'
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
     # invalid username characters tests
     assert signUpController.handleUserSignUp('usern>ame', 'password') == 'INVALID_USERNAME_CHARS'
@@ -27,22 +27,22 @@ def test_handleUserSignUp():
     assert signUpController.handleUserSignUp('{}{}{}{}{}', 'password') == 'INVALID_USERNAME_CHARS'
 
     # duplicate username tests
-    databaseAccessor.insertUserInfo('username', 'password1', 'testId')
+    DBA.insertUserInfo('username', 'password1', 'testId')
     assert signUpController.handleUserSignUp('username', 'password1') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
     signUpController.handleUserSignUp('Username', 'password')
     assert signUpController.handleUserSignUp('username', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
     signUpController.handleUserSignUp('username', 'password')
     assert signUpController.handleUserSignUp('Username', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
     signUpController.handleUserSignUp('UsErNAME', 'password')
     assert signUpController.handleUserSignUp('USERNAME', 'password') == 'DUPLICATE_USERNAME'
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
     signUpController.handleUserSignUp('USERNAME', 'password')
     assert signUpController.handleUserSignUp('username', 'password') == 'DUPLICATE_USERNAME'
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
     # characters out of range in username or password tests
     assert signUpController.handleUserSignUp('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;') == 'INVALID_USERNAME_LENGTH'
@@ -53,7 +53,7 @@ def test_handleUserSignUp():
     assert signUpController.handleUserSignUp('Username2', ' ') == 'INVALID_PASSWORD_LENGTH'
     assert signUpController.handleUserSignUp('GoodUsername', 'GoodPassword123') == 'SUCCESS'
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
 def test_getUser():
     user = signUpController.getUser('username1', 'password1')

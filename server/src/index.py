@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/controllers')
 from SignUpController import SignUpController
+from LoginController  import LoginController
 
 app = Flask(__name__)
 
@@ -40,6 +41,15 @@ def signUpSubmit():
         processResult = signUpController.handleUserSignUp(request.form['username'], request.form['password'])
         redirectPage = determineSignUpRedirectPage(processResult)
         return redirect(url_for(redirectPage))
+
+@app.route("/loginSubmit",  methods=['POST'])
+def loginSubmit():
+    if(request.method == 'POST'):
+        loginController = LoginController()
+        loginController.handleUserLogin(request.form['username'], request.form['password'])
+        
+        # redirectPage = determineSignUpRedirectPage(processResult)
+        # return redirect(url_for(redirectPage))
 
 def determineSignUpRedirectPage(processResult):
     if(processResult == 'SUCCESS'):

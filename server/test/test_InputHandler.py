@@ -5,7 +5,12 @@ from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
 
 inputHandler     = InputHandler()
-databaseAccessor = DatabaseAccessor()
+DBA = DatabaseAccessor()
+
+def getUser(self, username, password):
+    user = User(username, password)
+    user.encryptAndUpdatePassword(password)
+    return user
 
 def test_checkTextEmpty():
     assert inputHandler.checkTextEmpty('Not Empty') == False
@@ -55,37 +60,36 @@ def test_checkForInvalidUsernameChars():
     assert inputHandler.checkForInvalidUsernameChars(")(*&^)") == False
     assert inputHandler.checkForInvalidUsernameChars(")(*&^)textTest*&^%moretestis*fun';:") == False
 
-def test_parseSelectedField():
-    assert inputHandler.parseSelectedField('hello') == 'hello'
-    assert inputHandler.parseSelectedField("[(',hello')]") == 'hello'
-    assert inputHandler.parseSelectedField('[(,)') == ''
-
 def test_checkForExistingUsername():
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
-    databaseAccessor.insertUserInfo('randomename1', 'teddddstPassword1', 'testId')
-    databaseAccessor.insertUserInfo('anotherrand0mName', 'testPawddassword2', 'testId')
-    databaseAccessor.insertUserInfo('09876543', 'test', 'testId')
-    databaseAccessor.insertUserInfo('johnnotrealperson', 'password123', 'testId')
+    DBA.insertUserInfo('randomename1', 'teddddstPassword1', 'testId')
+    DBA.insertUserInfo('anotherrand0mName', 'testPawddassword2', 'testId')
+    DBA.insertUserInfo('09876543', 'test', 'testId')
+    DBA.insertUserInfo('johnnotrealperson', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('09876543')
     assert doesUsernameExist == True
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
-    databaseAccessor.insertUserInfo('robertH', 'teddddstPassword1', 'testId')
-    databaseAccessor.insertUserInfo('william', 'testPawddassword2', 'testId')
-    databaseAccessor.insertUserInfo('Johnathan', 'test', 'testId')
-    databaseAccessor.insertUserInfo('randomguy', 'password123', 'testId')
+    DBA.insertUserInfo('robertH', 'teddddstPassword1', 'testId')
+    DBA.insertUserInfo('william', 'testPawddassword2', 'testId')
+    DBA.insertUserInfo('Johnathan', 'test', 'testId')
+    DBA.insertUserInfo('randomguy', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('johnathan')
     assert doesUsernameExist == False
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
 
-    databaseAccessor.insertUserInfo('001', 'teddddstPassword1', 'testId')
-    databaseAccessor.insertUserInfo('02000000009', 'testPawddassword2', 'testId')
-    databaseAccessor.insertUserInfo('joe', 'test', 'testId')
-    databaseAccessor.insertUserInfo('testname', 'password123', 'testId')
+    DBA.insertUserInfo('001', 'teddddstPassword1', 'testId')
+    DBA.insertUserInfo('02000000009', 'testPawddassword2', 'testId')
+    DBA.insertUserInfo('joe', 'test', 'testId')
+    DBA.insertUserInfo('testname', 'password123', 'testId')
     doesUsernameExist = inputHandler.checkForExistingUsername('02000000009')
     assert doesUsernameExist == True
 
-    databaseAccessor.clearDatabase()
+    DBA.clearDatabase()
+
+# def test_verifyPassword():
+#     user = getUser('username1', 'password1')
+#

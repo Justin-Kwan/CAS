@@ -2,6 +2,7 @@ import pytest
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from User import User
+import jwt
 
 def test_getUsername():
     user = User('username1', 'password1')
@@ -29,9 +30,33 @@ def test_getUserId():
 
     del user
 
-def test_encryptAndUpdatePassword():
+def test_getSecurityToken():
     user = User('username5', 'password5')
-    user.encryptAndUpdatePassword('password5')
+    user.generateAndUpdateSecurityToken()
+    securityToken = user.getSecurityToken()
+
+    assert securityToken != None
+    
+    userData = jwt.decode(securityToken, 'fake_secret_key', algorithms=['HS256'])
+
+    assert 'username' in userData
+    assert 'username5' in userData.values()
+    assert 'user id' in userData
+
+def test_encryptAndUpdatePassword():
+    user = User('username6', 'password6')
+    user.encryptAndUpdatePassword('password6')
     assert user.getHashedPassword() != None
 
     del user
+
+def test_generateAndUpdateSecurityToken():
+    user = User('username7', 'password7')
+    user.generateAndUpdateSecurityToken()
+    securityToken = user.getSecurityToken()
+
+    userData = jwt.decode(securityToken, 'fake_secret_key', algorithms=['HS256'])
+
+    assert 'username' in userData
+    assert 'username7' in userData.values()
+    assert 'user id' in userData
