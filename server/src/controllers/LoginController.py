@@ -25,10 +25,14 @@ class LoginController():
         if(fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED):
             return fieldEmptyCheckResult
 
-        # check if user exists & check if input password matches user's password
+        # check if user exists
         doesUsernameExist = inputHandler.checkForExistingUsername(user)
+        if(doesUsernameExist == False):
+            return resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD
+
+        # check if input password matches user's password
         isPasswordCorrect = inputHandler.verifyPassword(user)
-        if(doesUsernameExist == False or isPasswordCorrect == False):
+        if(isPasswordCorrect == False):
             return resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD
 
         userId = DBA.selectUserId(user)

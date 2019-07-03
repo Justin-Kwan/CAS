@@ -77,7 +77,7 @@ class InputHandler():
     def checkForExistingUsername(self, user):
         selectedUsername = DBA.selectUsername(user)
         return selectedUsername == user.getUsername()
-        
+
     def verifyPassword(self, user):
         password = user.getTextPassword().encode('utf-8')
         selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')

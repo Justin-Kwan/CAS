@@ -42,4 +42,4 @@ class User():
         username = self.getUsername()
         userId = self.getUserId()
         tokenExpiryTime = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-        self.securityToken = jwt.encode({'username': username, 'user id': userId, 'exp': tokenExpiryTime}, 'fake_secret_key', algorithm='HS256')
+        self.securityToken = jwt.encode({'username': username, 'user id': userId, 'exp': tokenExpiryTime}, 'fake_secret_key', algorithm='HS256').decode()
