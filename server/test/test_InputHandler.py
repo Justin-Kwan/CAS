@@ -3,14 +3,22 @@ import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
+from User             import User
 
-inputHandler     = InputHandler()
+inputHandler = InputHandler()
 DBA = DatabaseAccessor()
 
-def getUser(self, username, password):
+def getUser(username, password):
     user = User(username, password)
     user.encryptAndUpdatePassword(password)
+    user.generateAndUpdateUserId()
     return user
+
+def test_checkInputNull():
+    assert inputHandler.checkInputNull(None, None) == 'EMPTY_FIELDS'
+    assert inputHandler.checkInputNull(None, 'password123') == 'EMPTY_USERNAME'
+    assert inputHandler.checkInputNull('username123', None) == 'EMPTY_PASSWORD'
+    assert inputHandler.checkInputNull('username123', 'password123') == 'ALL_FIELDS_FILLED'
 
 def test_checkTextEmpty():
     assert inputHandler.checkTextEmpty('Not Empty') == False
@@ -38,58 +46,176 @@ def test_checkInputLength():
     assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
 
 def test_handleEmptyFields():
-    assert inputHandler.handleEmptyFields('', '') == 'EMPTY_FIELDS'
-    assert inputHandler.handleEmptyFields('', 'password') == 'EMPTY_USERNAME'
-    assert inputHandler.handleEmptyFields('username', '') == 'EMPTY_PASSWORD'
-    assert inputHandler.handleEmptyFields('username', 'password') == 'ALL_FIELDS_FILLED'
+    user = getUser('', '')
+    assert inputHandler.handleEmptyFields(user) == 'EMPTY_FIELDS'
+    del user
+
+    user = getUser('', 'password')
+    assert inputHandler.handleEmptyFields(user) == 'EMPTY_USERNAME'
+    del user
+
+    user = getUser('username', '')
+    assert inputHandler.handleEmptyFields(user) == 'EMPTY_PASSWORD'
+    del user
+
+    user = getUser('username', 'password')
+    assert inputHandler.handleEmptyFields(user) == 'ALL_FIELDS_FILLED'
+    del user
 
 def test_handleInputLengthChecks():
-    assert inputHandler.handleInputLengthChecks('NewUser123', 'testusername') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
-    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernam') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
-    assert inputHandler.handleInputLengthChecks('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;') == 'INVALID_USERNAME_LENGTH'
-    assert inputHandler.handleInputLengthChecks('', 'usrnmdd') == 'INVALID_USERNAME_LENGTH'
-    assert inputHandler.handleInputLengthChecks('User', '') == 'INVALID_USERNAME_LENGTH'
-    assert inputHandler.handleInputLengthChecks(',', 'testusernametestusernametestusernametestusernametestusernametestusername') == 'INVALID_USERNAME_LENGTH'
-    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestu') == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
-    assert inputHandler.handleInputLengthChecks('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestus') == 'INVALID_PASSWORD_LENGTH'
-    assert inputHandler.handleInputLengthChecks('usrnmm', 'passwor') == 'INVALID_PASSWORD_LENGTH'
+    user = getUser('NewUser123', 'testusername')
+    assert inputHandler.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    del user
+
+    user = getUser('usrnmm', 'testusernametestusernametestusernam')
+    assert inputHandler.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    del user
+
+    user = getUser('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    del user
+
+    user = getUser('', 'usrnmdd')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    del user
+
+    user = getUser('User', '')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    del user
+
+    user = getUser(',', 'testusernametestusernametestusernametestusernametestusernametestusername')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    del user
+
+    user = getUser('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestu')
+    assert inputHandler.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    del user
+
+    user = getUser('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestus')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_PASSWORD_LENGTH'
+    del user
+
+    user = getUser('usrnmm', 'passwor')
+    assert inputHandler.handleInputLengthChecks(user) == 'INVALID_PASSWORD_LENGTH'
+    del user
 
 def test_checkForInvalidUsernameChars():
-    assert inputHandler.checkForInvalidUsernameChars("string2") == True
-    assert inputHandler.checkForInvalidUsernameChars("fake$username)") == False
-    assert inputHandler.checkForInvalidUsernameChars(")(*&^)") == False
-    assert inputHandler.checkForInvalidUsernameChars(")(*&^)textTest*&^%moretestis*fun';:") == False
+    user = getUser('string2', 'password123')
+    assert inputHandler.checkForInvalidUsernameChars(user) == True
+    del user
+
+    user = getUser('fake$username)', 'password123')
+    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    del user
+
+    user = getUser(')(*&^)', 'password123')
+    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    del user
+
+    user = getUser(')(*&^)textTest*&^%moretestis*fun;:', 'password123')
+    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    del user
 
 def test_checkForExistingUsername():
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('randomename1', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('anotherrand0mName', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('09876543', 'test', 'testId')
-    DBA.insertUserInfo('johnnotrealperson', 'password123', 'testId')
-    doesUsernameExist = inputHandler.checkForExistingUsername('09876543')
+    user1 = getUser('randomename1', 'teddddstPassword1')
+    user2 = getUser('anotherrand0mName', 'testPawddassword2')
+    user3 = getUser('09876543', 'test')
+    user4 = getUser('09876543', 'test')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
     assert doesUsernameExist == True
 
+    del user1
+    del user2
+    del user3
+    del user4
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('robertH', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('william', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('Johnathan', 'test', 'testId')
-    DBA.insertUserInfo('randomguy', 'password123', 'testId')
-    doesUsernameExist = inputHandler.checkForExistingUsername('johnathan')
+    user1 = getUser('robertH', 'teddddstPassword1')
+    user2 = getUser('william', 'testPawddassword2')
+    user3 = getUser('Johnathan', 'test')
+    user4 = getUser('robertH', 'test')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
+    assert doesUsernameExist == True
+
+    del user1
+    del user2
+    del user3
+    del user4
+    DBA.clearDatabase()
+
+    user1 = getUser('001', 'teddddstPassword1')
+    user2 = getUser('02000000009', 'testPawddassword2')
+    user3 = getUser('joe', 'test')
+    user4 = getUser('uniqueName', 'password123')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
     assert doesUsernameExist == False
 
-    DBA.clearDatabase()
-
-    DBA.insertUserInfo('001', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('02000000009', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('joe', 'test', 'testId')
-    DBA.insertUserInfo('testname', 'password123', 'testId')
-    doesUsernameExist = inputHandler.checkForExistingUsername('02000000009')
-    assert doesUsernameExist == True
-
+    del user1
+    del user2
+    del user3
+    del user4
     DBA.clearDatabase()
 
 # def test_verifyPassword():
-#     user = getUser('username1', 'password1')
+#     user1 = getUser('username1', 'password1')
+#     DBA.insertUserInfo(user1)
+#     user2 = getUser('username1', 'password1')
+#     isPasswordCorrect = inputHandler.verifyPassword(user2)
+#     assert isPasswordCorrect == True
 #
+#     del user1
+#     del user2
+#     DBA.clearDatabase()
+#
+#     user1 = getUser('username2', 'password2')
+#     DBA.insertUserInfo(user1)
+#     user2 = getUser('username2', 'password2')
+#     isPasswordCorrect = inputHandler.verifyPassword(user2)
+#     assert isPasswordCorrect == True
+#
+#     del user1
+#     del user2
+#     DBA.clearDatabase()
+
+
+def test_verifyPassword2():
+    user1 = getUser('username1', 'password1')
+    DBA.insertUserInfo(user1)
+    user2 = getUser('username1', 'password1')
+    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    assert isPasswordCorrect == True
+
+    del user1
+    del user2
+    DBA.clearDatabase()
+
+    user1 = getUser('username2', 'password2')
+    DBA.insertUserInfo(user1)
+    user2 = getUser('username2', 'password1')
+    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    assert isPasswordCorrect == False
+
+    del user1
+    del user2
+    DBA.clearDatabase()
+
+    user1 = getUser('username3', '^&*()()')
+    DBA.insertUserInfo(user1)
+    user2 = getUser('username3', '^&*()()')
+    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    assert isPasswordCorrect == True
+
+    del user1
+    del user2
+    DBA.clearDatabase()

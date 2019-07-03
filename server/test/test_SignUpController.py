@@ -7,11 +7,22 @@ from DatabaseAccessor import DatabaseAccessor
 signUpController = SignUpController()
 DBA = DatabaseAccessor()
 
+def getUser(username, password):
+    user = User(username, password)
+    user.encryptAndUpdatePassword(password)
+    user.generateAndUpdateUserId()
+    return user
+
 def test_handleUserSignUp():
+    DBA.clearDatabase()
+
     # empty field(s) tests
     assert signUpController.handleUserSignUp('', '') == 'EMPTY_FIELDS'
+    assert signUpController.handleUserSignUp(None, None) == 'EMPTY_FIELDS'
     assert signUpController.handleUserSignUp('', 'password') == 'EMPTY_USERNAME'
+    assert signUpController.handleUserSignUp(None, 'password') == 'EMPTY_USERNAME'
     assert signUpController.handleUserSignUp('username', '') == 'EMPTY_PASSWORD'
+    assert signUpController.handleUserSignUp('username', None) == 'EMPTY_PASSWORD'
 
     # success tests
     assert signUpController.handleUserSignUp('username1', 'password') == 'SUCCESS'
@@ -27,7 +38,7 @@ def test_handleUserSignUp():
     assert signUpController.handleUserSignUp('{}{}{}{}{}', 'password') == 'INVALID_USERNAME_CHARS'
 
     # duplicate username tests
-    DBA.insertUserInfo('username', 'password1', 'testId')
+    signUpController.handleUserSignUp('username', 'password1')
     assert signUpController.handleUserSignUp('username', 'password1') == 'DUPLICATE_USERNAME'
     DBA.clearDatabase()
     signUpController.handleUserSignUp('Username', 'password')
@@ -64,3 +75,4 @@ def test_getUser():
     assert len(user.getUserId()) == 36
 
     del user
+    DBA.clearDatabase()

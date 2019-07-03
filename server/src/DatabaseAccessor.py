@@ -11,27 +11,30 @@ cursor = connection.cursor()
 
 class DatabaseAccessor():
 
-    def selectUsername(self, username):
+    def selectUsername(self, user):
+        username = user.getUsername()
         cursor.execute("SELECT Username from Users WHERE Username = %s", (username,))
         selectedUsername = cursor.fetchone()
         return self.handleQueryReturn(selectedUsername)
 
-    # selects user's hashed password based on username
-    def selectHashedPassword(self, username):
+    def selectHashedPassword(self, user):
+        username = user.getUsername()
         cursor.execute("SELECT HashedPass from Users WHERE Username = %s", (username,))
         selectedHashedPassword = cursor.fetchone()
         return self.handleQueryReturn(selectedHashedPassword)
 
-    def selectUserId(self, userId):
-        cursor.execute("SELECT UserId from Users WHERE UserId = %s", (userId,))
+    def selectUserId(self, user):
+        username = user.getUsername()
+        cursor.execute("SELECT UserId from Users WHERE Username = %s", (username,))
         selectedUserId = cursor.fetchone()
         return self.handleQueryReturn(selectedUserId)
 
-    def insertUserInfo(self, username, hashedPassword, userId):
+    def insertUserInfo(self, user):
+        username = user.getUsername()
+        hashedPassword = user.getHashedPassword()
+        userId = user.getUserId()
         cursor.execute("INSERT INTO Users(Username, HashedPass, UserId) VALUES(%s, %s, %s)", (username, hashedPassword, userId))
         connection.commit()
-        username = ''
-        hashedPassword = ''
 
     def clearDatabase(self):
         cursor.execute('DELETE FROM Users')

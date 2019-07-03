@@ -5,27 +5,27 @@
 
 import bcrypt
 from DatabaseAccessor import DatabaseAccessor
-from ResultCodes import ResultCodes
+from ResultCodes      import ResultCodes
 
 DBA = DatabaseAccessor()
 resultCodes = ResultCodes()
 
 class InputHandler():
 
-    # def handleEmptyFields(self, username, password):
-    #     isUsernameEmpty = self.checkTextEmpty(username)
-    #     isPasswordEmpty = self.checkTextEmpty(password)
-    #
-    #     if(isUsernameEmpty and isPasswordEmpty):
-    #         return resultCodes.ERROR_EMPTY_FIELDS
-    #     elif(isUsernameEmpty):
-    #         return resultCodes.ERROR_EMPTY_USERNAME
-    #     elif(isPasswordEmpty):
-    #         return resultCodes.ERROR_EMPTY_PASSWORD
-    #     else:
-    #         return resultCodes.SUCCESS_FIELDS_FILLED
+    def checkInputNull(self, username, password):
+        if(username == None and password == None):
+            return resultCodes.ERROR_EMPTY_FIELDS
+        elif(username == None and password != None):
+            return resultCodes.ERROR_EMPTY_USERNAME
+        elif(password == None and username != None):
+            return resultCodes.ERROR_EMPTY_PASSWORD
+        return resultCodes.SUCCESS_FIELDS_FILLED
 
-    def handleEmptyFields(self, username, password):
+    def handleEmptyFields(self, user):
+
+        username = user.getUsername()
+        password = user.getTextPassword()
+
         isUsernameEmpty = self.checkTextEmpty(username)
         isPasswordEmpty = self.checkTextEmpty(password)
 
@@ -38,7 +38,16 @@ class InputHandler():
         else:
             return resultCodes.SUCCESS_FIELDS_FILLED
 
-    def handleInputLengthChecks(self, username, password):
+    def checkTextEmpty(self, text):
+        if(len(text) == 0):
+            return True
+        return False
+
+    def handleInputLengthChecks(self, user):
+
+        username = user.getUsername()
+        password = user.getTextPassword()
+
         isUsernameLengthOk = self.checkInputLength('USERNAME', username)
         isPasswordLengthOk = self.checkInputLength('PASSWORD', password)
 
@@ -51,27 +60,28 @@ class InputHandler():
         else:
             return resultCodes.ERROR_USERNAME_LENGTH_INVALID
 
-    def checkTextEmpty(self, text):
-        return text == ''
-
     def checkInputLength(self, inputType, input):
         if(inputType == 'USERNAME'):
             return len(input) >= 6 and len(input) <= 35
         elif(inputType == 'PASSWORD'):
             return len(input) >= 8 and len(input) <= 65
 
-    def checkForInvalidUsernameChars(self, username):
+    def checkForInvalidUsernameChars(self, user):
+        username = user.getUsername()
+
         for currentChar in username:
             if(currentChar.isalpha() == False and currentChar.isdigit() == False):
                 return False
         return True
 
-    def checkForExistingUsername(self, username):
-        selectedUsername = DBA.selectUsername(username)
-        return selectedUsername == username
+    def checkForExistingUsername(self, user):
+        selectedUsername = DBA.selectUsername(user)
+        return selectedUsername == user.getUsername()
+        
+    def verifyPassword(self, user):
+        password = user.getTextPassword().encode('utf-8')
+        selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
 
-    '''test!'''
-    def verifyPassword(self, username, password):
-        selectedHashedPassword = DBA.selectHashedPassword(username)
-        isPasswordCorrect = bcrypt.check_password_hash(selectedHashedPassword, password)
-        return isPasswordCorrect
+        if(bcrypt.checkpw(password, selectedHashedPassword) == False):
+            return False
+        return True

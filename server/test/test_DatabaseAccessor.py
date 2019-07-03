@@ -2,129 +2,152 @@ import pytest
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from DatabaseAccessor import DatabaseAccessor
-from InputHandler import InputHandler
+from InputHandler     import InputHandler
+from User             import User
 
 DBA = DatabaseAccessor()
 inputHandler  = InputHandler()
+
+def getUser(username, password, userId):
+    user = User(username, password)
+    user.encryptAndUpdatePassword(password)
+    user.updateUserId(userId)
+    return user
 
 # test username, password and user id inserting function
 def test_insertUserInfo():
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('testUsername1', 'testPassword1', 'testId1')
-    selectedUsername = DBA.selectUsername('testUsername1')
-    selectedHashedPassword = DBA.selectHashedPassword('testUsername1')
-    selectedUserId = DBA.selectUserId('testId1')
+    user = getUser('testUsername1', 'testPassword1', 'testId1')
+    DBA.insertUserInfo(user)
+    selectedUsername = DBA.selectUsername(user)
+    selectedHashedPassword = DBA.selectHashedPassword(user)
+    selectedUserId = DBA.selectUserId(user)
     assert selectedUsername == 'testUsername1'
-    assert selectedHashedPassword == 'testPassword1'
+    assert selectedHashedPassword != None
     assert selectedUserId == 'testId1'
 
+    del user
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('09812', '*7%-', 'testId2')
-    selectedUsername = DBA.selectUsername('09812')
-    selectedHashedPassword = DBA.selectHashedPassword('09812')
-    selectedUserId = DBA.selectUserId('testId2')
+    user = getUser('09812', '*7%-', 'testId2')
+    DBA.insertUserInfo(user)
+    selectedUsername = DBA.selectUsername(user)
+    selectedHashedPassword = DBA.selectHashedPassword(user)
+    selectedUserId = DBA.selectUserId(user)
     assert selectedUsername == '09812'
-    assert selectedHashedPassword == '*7%-'
+    assert selectedHashedPassword != None
     assert selectedUserId == 'testId2'
 
+    del user
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('-l-&$', '=testpassw0rd', 'testId3')
-    selectedUsername = DBA.selectUsername('-l-&$')
-    selectedHashedPassword = DBA.selectHashedPassword('-l-&$')
-    selectedUserId = DBA.selectUserId('testId3')
+    user = getUser('-l-&$', '=testpassw0rd', 'testId3')
+    DBA.insertUserInfo(user)
+    selectedUsername = DBA.selectUsername(user)
+    selectedHashedPassword = DBA.selectHashedPassword(user)
+    selectedUserId = DBA.selectUserId(user)
     assert selectedUsername == '-l-&$'
-    assert selectedHashedPassword == '=testpassw0rd'
+    assert selectedHashedPassword != None
     assert selectedUserId == 'testId3'
 
-    DBA.clearDatabase()
-
-    DBA.insertUserInfo('-l-&$', '=testpassw0rd', 'testId3')
-    selectedUsername = DBA.selectUsername('-l--&$')
-    selectedHashedPassword = DBA.selectHashedPassword('-l--&$')
-    selectedUserId = DBA.selectUserId('testId30')
-    assert selectedUsername == None
-    assert selectedHashedPassword == None
-    assert selectedUserId == None
-
+    del user
     DBA.clearDatabase()
 
 # test username selecting function
 def test_selectUsername():
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('testUsername1', 'testPassword1', 'testId')
-    DBA.insertUserInfo('testUsername2', 'testPassword2', 'testId')
-    DBA.insertUserInfo('testUsername3', 'testPassword3', 'testId')
-    selectedUsername = DBA.selectUsername('testUsername2')
+    user1 = getUser('testUsername1', 'testPassword1', 'testId')
+    user2 = getUser('testUsername2', 'testPassword2', 'testId')
+    user3 = getUser('testUsername3', 'testPassword3', 'testId')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedUsername = DBA.selectUsername(user2)
     assert selectedUsername == 'testUsername2'
 
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('fakename', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('testdwdadUsername2', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('w90', 'test', 'testId')
-    selectedUsername = DBA.selectUsername('w90')
+    user1 = getUser('fakename', 'teddddstPassword1', 'testId')
+    user2 = getUser('testdwdadUsername2', 'testPawddassword2', 'testId')
+    user3 = getUser('w90', 'test', 'testId')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedUsername = DBA.selectUsername(user3)
     assert selectedUsername == 'w90'
 
-    DBA.clearDatabase()
-
-    DBA.insertUserInfo('fakename3', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('testdwdadUsername3', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('3', 'test', 'testId')
-    selectedUsername = DBA.selectUsername('35')
-    assert selectedUsername == None
-
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
 # test password selecting function
 def test_selectHashedPassword():
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('rando', 'testPassword1', 'testId')
-    DBA.insertUserInfo('rando2', 'testPassword2', 'testId')
-    DBA.insertUserInfo('rando3', 'testPassword3', 'testId')
-    selectedHashedPassword = DBA.selectHashedPassword('rando2')
-    assert selectedHashedPassword == 'testPassword2'
+    user1 = getUser('rando', 'testPassword1', 'testId')
+    user2 = getUser('rando2', 'testPassword2', 'testId')
+    user3 = getUser('rando3', 'testPassword3', 'testId')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedHashedPassword = DBA.selectHashedPassword(user2)
+    assert selectedHashedPassword != None
 
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('name1', 'teddddstPassword1', 'testId')
-    DBA.insertUserInfo('name2', 'testPawddassword2', 'testId')
-    DBA.insertUserInfo('name3', 'test', 'testId')
-    selectedHashedPassword = DBA.selectHashedPassword('name4')
-    assert selectedHashedPassword == None
+    user1 = getUser('name1', 'teddddstPassword1', 'testId')
+    user2 = getUser('name2', 'testPawddassword2', 'testId')
+    user3 = getUser('name3', 'test', 'testId')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedHashedPassword = DBA.selectHashedPassword(user3)
+    assert selectedHashedPassword != None
 
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
 # test user id selecting function
 def test_selectUserId():
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('name1', 'teddddstPassword1', 'testId1')
-    DBA.insertUserInfo('name2', 'teddddstPassword2', 'testId2')
-    DBA.insertUserInfo('name3', 'teddddstPassword3', 'testId3')
-    selectedUserId = DBA.selectUserId('testId3')
+    user1 = getUser('name1', 'teddddstPassword1', 'testId1')
+    user2 = getUser('name2', 'teddddstPassword2', 'testId2')
+    user3 = getUser('name3', 'teddddstPassword3', 'testId3')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedUserId = DBA.selectUserId(user3)
     assert selectedUserId == 'testId3'
 
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
-    DBA.insertUserInfo('name1', 'teddddstPassword1', 'testId0')
-    DBA.insertUserInfo('name2', 'teddddstPassword2', 'testId4')
-    DBA.insertUserInfo('name3', 'teddddstPassword3', 'testId9')
-    selectedUserId = DBA.selectUserId('testId4')
+    user1 = getUser('name1', 'teddddstPassword1', 'testId0')
+    user2 = getUser('name2', 'teddddstPassword2', 'testId4')
+    user3 = getUser('name3', 'teddddstPassword3', 'testId9')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    selectedUserId = DBA.selectUserId(user2)
     assert selectedUserId == 'testId4'
 
-    DBA.clearDatabase()
-
-    DBA.insertUserInfo('name1', 'teddddstPassword1', 'testId0')
-    DBA.insertUserInfo('name2', 'teddddstPassword2', 'testId4')
-    DBA.insertUserInfo('name3', 'teddddstPassword3', 'testId9')
-    selectedUserId = DBA.selectUserId('testId5')
-    assert selectedUserId == None
-
+    del user1
+    del user2
+    del user3
     DBA.clearDatabase()
 
 def test_handleQueryReturn():

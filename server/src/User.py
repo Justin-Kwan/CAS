@@ -8,9 +8,9 @@ class User():
     def __init__(self, username, textPassword):
         self.username       = username
         self.textPassword   = textPassword
-        self.hashedPassword = ''
-        self.userId         = str(uuid.uuid4())
-        self.securityToken  = ''
+        self.hashedPassword = None
+        self.userId         = None
+        self.securityToken  = None
 
     def getUsername(self):
         return self.username
@@ -27,15 +27,16 @@ class User():
     def getSecurityToken(self):
         return self.securityToken
 
-    # update User Id!
-
-    
+    def updateUserId(self, userId):
+        self.userId = userId
 
     def encryptAndUpdatePassword(self, password):
-        hashedPassword = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
-        self.hashedPassword = str(hashedPassword)
+        hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # generated password is encoded so must decode before storing in db
+        self.hashedPassword = hashedPassword.decode()
 
-    # generate and update user id!
+    def generateAndUpdateUserId(self):
+        self.userId = str(uuid.uuid4())
 
     def generateAndUpdateSecurityToken(self):
         username = self.getUsername()
