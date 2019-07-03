@@ -10,35 +10,35 @@ inputHandler = InputHandler()
 resultCodes  = ResultCodes()
 DBA          = DatabaseAccessor()
 
-class SignUpController():
+class SignUpHandler():
 
     def handleUserSignUp(self, username, password):
 
         # check if inputs are null
         fieldNullCheckResult = inputHandler.checkInputNull(username, password)
-        if(fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED):
+        if fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
             return fieldNullCheckResult
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if inputs are empty strings
         fieldEmptyCheckResult = inputHandler.handleEmptyFields(user)
-        if(fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED):
+        if fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
             return fieldEmptyCheckResult
 
         # check for proper string input lengths
         inputLengthResult = inputHandler.handleInputLengthChecks(user)
-        if(inputLengthResult != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH):
+        if inputLengthResult != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH:
             return inputLengthResult
 
         # check for invalid characters in inputs
         isUsernameCharsValid = inputHandler.checkForInvalidUsernameChars(user)
-        if(isUsernameCharsValid == False):
+        if isUsernameCharsValid == False:
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 
         # check if username already exists
         doesUsernameExist = inputHandler.checkForExistingUsername(user)
-        if(doesUsernameExist):
+        if doesUsernameExist:
             return resultCodes.ERROR_DUPLICATE_USERNAME
 
         # insert user info into db

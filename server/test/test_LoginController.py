@@ -1,66 +1,74 @@
 import pytest
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/controllers')
-from SignUpController import SignUpController
-from LoginController import LoginController
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/handlers')
+from SignUpHandler    import SignUpHandler
+from LoginHandler     import LoginHandler
 from DatabaseAccessor import DatabaseAccessor
 import jwt
 
-signUpController = SignUpController()
-loginController = LoginController()
+signUpHandler = SignUpHandler()
+loginHandler = LoginHandler()
 DBA = DatabaseAccessor()
 
 def test_handleUserLogin():
     DBA.clearDatabase()
 
     # success test login
-    signUpController.handleUserSignUp('fakename1', 'password123')
-    processResult = loginController.handleUserLogin('fakename1', 'password123')
-    assert processResult != None
-    userData = jwt.decode(processResult, 'fake_secret_key', algorithms=['HS256'])
+    signUpHandler.handleUserSignUp('fakename1', 'password123')
+    resultPackage = loginHandler.handleUserLogin('fakename1', 'password123')
+    assert resultPackage != None
+    userData = jwt.decode(resultPackage[0], 'fake_secret_key', algorithms=['HS256'])
     assert 'username' in userData
     assert 'fakename1' in userData.values()
     assert 'user id' in userData
 
     # success test login
-    signUpController.handleUserSignUp('fakename2', 'password345')
-    processResult = loginController.handleUserLogin('fakename2', 'password345')
-    assert processResult != None
-    userData = jwt.decode(processResult, 'fake_secret_key', algorithms=['HS256'])
+    signUpHandler.handleUserSignUp('fakename2', 'password345')
+    resultPackage = loginHandler.handleUserLogin('fakename2', 'password345')
+    assert resultPackage != None
+    userData = jwt.decode(resultPackage[0], 'fake_secret_key', algorithms=['HS256'])
     assert 'username' in userData
     assert 'fakename2' in userData.values()
     assert 'user id' in userData
 
     # fail test login with wrong password
-    signUpController.handleUserSignUp('fakename3', 'password567')
-    processResult = loginController.handleUserLogin('fakename3', 'password000')
-    assert processResult == 'INVALID_USERNAME_OR_PASSWORD'
+    signUpHandler.handleUserSignUp('fakename3', 'password567')
+    resultPackage = loginHandler.handleUserLogin('fakename3', 'password000')
+    assert resultPackage[1] == 'INVALID_USERNAME_OR_PASSWORD'
+    assert resultPackage[0] == 'NO_TOKEN'
 
     # fail test login with non-existent username
-    signUpController.handleUserSignUp('fakename4', 'password789')
-    processResult = loginController.handleUserLogin('fakename0', 'password789')
-    assert processResult == 'INVALID_USERNAME_OR_PASSWORD'
+    signUpHandler.handleUserSignUp('fakename4', 'password789')
+    resultPackage = loginHandler.handleUserLogin('fakename0', 'password789')
+    assert resultPackage[1] == 'INVALID_USERNAME_OR_PASSWORD'
+    assert resultPackage[0] == 'NO_TOKEN'
 
     # fail test login with empty username & password strings
-    processResult = loginController.handleUserLogin('', '')
-    assert processResult == 'EMPTY_FIELDS'
-    processResult = loginController.handleUserLogin('fakename4', '')
-    assert processResult == 'EMPTY_PASSWORD'
-    processResult = loginController.handleUserLogin('', 'password345')
-    assert processResult == 'EMPTY_USERNAME'
+    resultPackage = loginHandler.handleUserLogin('', '')
+    assert resultPackage[1] == 'EMPTY_FIELDS'
+    assert resultPackage[0] == 'NO_TOKEN'
+    resultPackage = loginHandler.handleUserLogin('fakename4', '')
+    assert resultPackage[1] == 'EMPTY_PASSWORD'
+    assert resultPackage[0] == 'NO_TOKEN'
+    resultPackage = loginHandler.handleUserLogin('', 'password345')
+    assert resultPackage[1] == 'EMPTY_USERNAME'
+    assert resultPackage[0] == 'NO_TOKEN'
 
     # fail test login with null username & password
-    processResult = loginController.handleUserLogin(None, None)
-    assert processResult == 'EMPTY_FIELDS'
-    processResult = loginController.handleUserLogin('fakename4', None)
-    assert processResult == 'EMPTY_PASSWORD'
-    processResult = loginController.handleUserLogin(None, 'password345')
-    assert processResult == 'EMPTY_USERNAME'
+    resultPackage = loginHandler.handleUserLogin(None, None)
+    assert resultPackage[1] == 'EMPTY_FIELDS'
+    assert resultPackage[0] == 'NO_TOKEN'
+    resultPackage = loginHandler.handleUserLogin('fakename4', None)
+    assert resultPackage[1] == 'EMPTY_PASSWORD'
+    assert resultPackage[0] == 'NO_TOKEN'
+    resultPackage = loginHandler.handleUserLogin(None, 'password345')
+    assert resultPackage[1] == 'EMPTY_USERNAME'
+    assert resultPackage[0] == 'NO_TOKEN'
 
     DBA.clearDatabase()
 
 def test_getUser():
-    user = loginController.getUser('username1', 'password1')
+    user = loginHandler.getUser('username1', 'password1')
     assert user.getUsername() == 'username1'
     assert user.getTextPassword() == 'password1'
     assert user.getHashedPassword() == None

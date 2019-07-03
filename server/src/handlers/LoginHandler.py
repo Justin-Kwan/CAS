@@ -9,38 +9,38 @@ inputHandler = InputHandler()
 resultCodes  = ResultCodes()
 DBA          = DatabaseAccessor()
 
-class LoginController():
+class LoginHandler():
 
     def handleUserLogin(self, username, password):
 
         # check if inputs are null
         fieldNullCheckResult = inputHandler.checkInputNull(username, password)
-        if(fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED):
-            return fieldNullCheckResult
+        if fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
+            return [resultCodes.NO_TOKEN, fieldNullCheckResult]
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if fields are empty strings
         fieldEmptyCheckResult = inputHandler.handleEmptyFields(user)
-        if(fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED):
-            return fieldEmptyCheckResult
+        if fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
+            return [resultCodes.NO_TOKEN, fieldEmptyCheckResult]
 
         # check if user exists
         doesUsernameExist = inputHandler.checkForExistingUsername(user)
-        if(doesUsernameExist == False):
-            return resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD
+        if doesUsernameExist == False:
+            return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         # check if input password matches user's password
         isPasswordCorrect = inputHandler.verifyPassword(user)
-        if(isPasswordCorrect == False):
-            return resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD
+        if isPasswordCorrect == False:
+            return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         userId = DBA.selectUserId(user)
         user.updateUserId(userId)
         user.generateAndUpdateSecurityToken()
         securityToken = user.getSecurityToken()
 
-        return securityToken
+        return [securityToken, resultCodes.SUCCESS]
 
     def getUser(self, username, password):
         user = User(username, password)

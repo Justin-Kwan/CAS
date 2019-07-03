@@ -54,12 +54,13 @@ def test_getSecurityToken():
     securityToken = user.getSecurityToken()
 
     assert securityToken != None
-    
+
     userData = jwt.decode(securityToken, 'fake_secret_key', algorithms=['HS256'])
 
     assert 'username' in userData
     assert 'username5' in userData.values()
     assert 'user id' in userData
+    assert user.getUserId() in userData.values()
 
 def test_encryptAndUpdatePassword():
     user = getUser('username6', 'password6')
@@ -76,3 +77,4 @@ def test_generateAndUpdateSecurityToken():
     assert 'username' in userData
     assert 'username7' in userData.values()
     assert 'user id' in userData
+    assert user.getUserId() in userData.values()

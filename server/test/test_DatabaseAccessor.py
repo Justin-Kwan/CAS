@@ -54,6 +54,19 @@ def test_insertUserInfo():
     del user
     DBA.clearDatabase()
 
+    user = getUser('fake-user', 'password123', '')
+    user.generateAndUpdateUserId()
+    DBA.insertUserInfo(user)
+    selectedUsername = DBA.selectUsername(user)
+    selectedHashedPassword = DBA.selectHashedPassword(user)
+    selectedUserId = DBA.selectUserId(user)
+    assert selectedUsername == 'fake-user'
+    assert selectedHashedPassword != None
+    assert selectedUserId == user.getUserId()
+
+    del user
+    DBA.clearDatabase()
+
 # test username selecting function
 def test_selectUsername():
     DBA.clearDatabase()
