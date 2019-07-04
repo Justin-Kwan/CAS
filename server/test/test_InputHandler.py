@@ -1,6 +1,8 @@
 import pytest
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
 from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
 from User             import User
@@ -116,84 +118,12 @@ def test_checkForInvalidUsernameChars():
     assert inputHandler.checkForInvalidUsernameChars(user) == False
     del user
 
-def test_checkForExistingUsername():
-    DBA.clearDatabase()
-
-    user1 = getUser('randomename1', 'teddddstPassword1')
-    user2 = getUser('anotherrand0mName', 'testPawddassword2')
-    user3 = getUser('09876543', 'test')
-    user4 = getUser('09876543', 'test')
-    DBA.insertUserInfo(user1)
-    DBA.insertUserInfo(user2)
-    DBA.insertUserInfo(user3)
-    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
-    assert doesUsernameExist == True
-
-    del user1
-    del user2
-    del user3
-    del user4
-    DBA.clearDatabase()
-
-    user1 = getUser('robertH', 'teddddstPassword1')
-    user2 = getUser('william', 'testPawddassword2')
-    user3 = getUser('Johnathan', 'test')
-    user4 = getUser('robertH', 'test')
-    DBA.insertUserInfo(user1)
-    DBA.insertUserInfo(user2)
-    DBA.insertUserInfo(user3)
-    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
-    assert doesUsernameExist == True
-
-    del user1
-    del user2
-    del user3
-    del user4
-    DBA.clearDatabase()
-
-    user1 = getUser('001', 'teddddstPassword1')
-    user2 = getUser('02000000009', 'testPawddassword2')
-    user3 = getUser('joe', 'test')
-    user4 = getUser('uniqueName', 'password123')
-    DBA.insertUserInfo(user1)
-    DBA.insertUserInfo(user2)
-    DBA.insertUserInfo(user3)
-    doesUsernameExist = inputHandler.checkForExistingUsername(user4)
-    assert doesUsernameExist == False
-
-    del user1
-    del user2
-    del user3
-    del user4
-    DBA.clearDatabase()
-
-# def test_verifyPassword():
-#     user1 = getUser('username1', 'password1')
-#     DBA.insertUserInfo(user1)
-#     user2 = getUser('username1', 'password1')
-#     isPasswordCorrect = inputHandler.verifyPassword(user2)
-#     assert isPasswordCorrect == True
-#
-#     del user1
-#     del user2
-#     DBA.clearDatabase()
-#
-#     user1 = getUser('username2', 'password2')
-#     DBA.insertUserInfo(user1)
-#     user2 = getUser('username2', 'password2')
-#     isPasswordCorrect = inputHandler.verifyPassword(user2)
-#     assert isPasswordCorrect == True
-#
-#     del user1
-#     del user2
-#     DBA.clearDatabase()
-
-
-def test_verifyPassword2():
+def test_verifyPassword():
     user1 = getUser('username1', 'password1')
     DBA.insertUserInfo(user1)
     user2 = getUser('username1', 'password1')
-    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
+    isPasswordCorrect = inputHandler.verifyPassword(user2, selectedHashedPassword)
     assert isPasswordCorrect == True
 
     del user1
@@ -203,7 +133,8 @@ def test_verifyPassword2():
     user1 = getUser('username2', 'password2')
     DBA.insertUserInfo(user1)
     user2 = getUser('username2', 'password1')
-    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
+    isPasswordCorrect = inputHandler.verifyPassword(user2, selectedHashedPassword)
     assert isPasswordCorrect == False
 
     del user1
@@ -213,7 +144,8 @@ def test_verifyPassword2():
     user1 = getUser('username3', '^&*()()')
     DBA.insertUserInfo(user1)
     user2 = getUser('username3', '^&*()()')
-    isPasswordCorrect = inputHandler.verifyPassword(user2)
+    selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
+    isPasswordCorrect = inputHandler.verifyPassword(user2, selectedHashedPassword)
     assert isPasswordCorrect == True
 
     del user1

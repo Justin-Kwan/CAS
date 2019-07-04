@@ -1,5 +1,7 @@
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
 from ResultCodes      import ResultCodes
@@ -15,16 +17,16 @@ class SignUpHandler():
     def handleUserSignUp(self, username, password):
 
         # check if inputs are null
-        fieldNullCheckResult = inputHandler.checkInputNull(username, password)
-        if fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
-            return fieldNullCheckResult
+        fieldNullCheck = inputHandler.checkInputNull(username, password)
+        if fieldNullCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return fieldNullCheck
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if inputs are empty strings
-        fieldEmptyCheckResult = inputHandler.handleEmptyFields(user)
-        if fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
-            return fieldEmptyCheckResult
+        fieldEmptyCheck = inputHandler.handleEmptyFields(user)
+        if fieldEmptyCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return fieldEmptyCheck
 
         # check for proper string input lengths
         inputLengthResult = inputHandler.handleInputLengthChecks(user)
@@ -37,7 +39,7 @@ class SignUpHandler():
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 
         # check if username already exists
-        doesUsernameExist = inputHandler.checkForExistingUsername(user)
+        doesUsernameExist = DBA.checkForExistingUsername(user)
         if doesUsernameExist:
             return resultCodes.ERROR_DUPLICATE_USERNAME
 

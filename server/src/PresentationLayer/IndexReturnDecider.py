@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from ResultCodes import ResultCodes
 
 resultCodes = ResultCodes()

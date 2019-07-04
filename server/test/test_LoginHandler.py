@@ -1,6 +1,7 @@
 import pytest
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from SignUpHandler    import SignUpHandler
 from LoginHandler     import LoginHandler
 from DatabaseAccessor import DatabaseAccessor

@@ -1,5 +1,7 @@
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from InputHandler     import InputHandler
 from DatabaseAccessor import DatabaseAccessor
 from ResultCodes      import ResultCodes
@@ -26,12 +28,13 @@ class LoginHandler():
             return [resultCodes.NO_TOKEN, fieldEmptyCheckResult]
 
         # check if user exists
-        doesUsernameExist = inputHandler.checkForExistingUsername(user)
+        doesUsernameExist = DBA.checkForExistingUsername(user)
         if doesUsernameExist == False:
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         # check if input password matches user's password
-        isPasswordCorrect = inputHandler.verifyPassword(user)
+        selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
+        isPasswordCorrect = inputHandler.verifyPassword(user, selectedHashedPassword)
         if isPasswordCorrect == False:
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 

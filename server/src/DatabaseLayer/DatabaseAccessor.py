@@ -36,6 +36,10 @@ class DatabaseAccessor():
         cursor.execute("INSERT INTO Users(Username, HashedPass, UserId) VALUES(%s, %s, %s)", (username, hashedPassword, userId))
         connection.commit()
 
+    def checkForExistingUsername(self, user):
+        selectedUsername = self.selectUsername(user)
+        return selectedUsername == user.getUsername()
+
     def clearDatabase(self):
         cursor.execute('DELETE FROM Users')
         connection.commit()

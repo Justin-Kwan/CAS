@@ -1,6 +1,8 @@
 import pytest
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from DatabaseAccessor import DatabaseAccessor
 from InputHandler     import InputHandler
 from User             import User
@@ -162,6 +164,58 @@ def test_selectUserId():
     del user2
     del user3
     DBA.clearDatabase()
+
+def test_checkForExistingUsername():
+    DBA.clearDatabase()
+
+    user1 = getUser('randomename1', 'teddddstPassword1', 'fakeid1')
+    user2 = getUser('anotherrand0mName', 'testPawddassword2', 'fakeid2')
+    user3 = getUser('09876543', 'test', 'fakeid3')
+    user4 = getUser('09876543', 'test', 'fakeid4')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = DBA.checkForExistingUsername(user4)
+    assert doesUsernameExist == True
+
+    del user1
+    del user2
+    del user3
+    del user4
+    DBA.clearDatabase()
+
+    user1 = getUser('robertH', 'teddddstPassword1', 'fakeid1')
+    user2 = getUser('william', 'testPawddassword2', 'fakeid2')
+    user3 = getUser('Johnathan', 'test', 'fakeid3')
+    user4 = getUser('robertH', 'test', 'fakeid4')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = DBA.checkForExistingUsername(user4)
+    assert doesUsernameExist == True
+
+    del user1
+    del user2
+    del user3
+    del user4
+    DBA.clearDatabase()
+
+    user1 = getUser('001', 'teddddstPassword1', 'fakeid1')
+    user2 = getUser('02000000009', 'testPawddassword2', 'fakeid2')
+    user3 = getUser('joe', 'test', 'fakeid3')
+    user4 = getUser('uniqueName', 'password123', 'fakeid4')
+    DBA.insertUserInfo(user1)
+    DBA.insertUserInfo(user2)
+    DBA.insertUserInfo(user3)
+    doesUsernameExist = DBA.checkForExistingUsername(user4)
+    assert doesUsernameExist == False
+
+    del user1
+    del user2
+    del user3
+    del user4
+    DBA.clearDatabase()
+
 
 def test_handleQueryReturn():
     emptyTuple = ()

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/controllers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 from SignUpHandler      import SignUpHandler
 from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
