@@ -17,25 +17,25 @@ class SignUpHandler():
     def handleUserSignUp(self, username, password):
 
         # check if inputs are null
-        fieldNullCheck = inputHandler.checkInputNull(username, password)
-        if fieldNullCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return fieldNullCheck
+        resultOfNullFieldCheck = inputHandler.checkInputNull(username, password)
+        if resultOfNullFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return resultOfNullFieldCheck
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if inputs are empty strings
-        fieldEmptyCheck = inputHandler.handleEmptyFields(user)
-        if fieldEmptyCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return fieldEmptyCheck
+        resultOfEmptyFieldCheck = inputHandler.handleEmptyInputFields(user)
+        if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return resultOfEmptyFieldCheck
 
         # check for proper string input lengths
-        inputLengthResult = inputHandler.handleInputLengthChecks(user)
-        if inputLengthResult != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH:
-            return inputLengthResult
+        resultOfInputLengthCheck = inputHandler.handleInputLengthChecks(user)
+        if resultOfInputLengthCheck != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH:
+            return resultOfInputLengthCheck
 
         # check for invalid characters in inputs
-        isUsernameCharsValid = inputHandler.checkForInvalidUsernameChars(user)
-        if isUsernameCharsValid == False:
+        areUsernameCharsValid = inputHandler.verifyUsernameChars(user)
+        if areUsernameCharsValid == False:
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 
         # check if username already exists

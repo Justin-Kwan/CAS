@@ -16,16 +16,16 @@ class LoginHandler():
     def handleUserLogin(self, username, password):
 
         # check if inputs are null
-        fieldNullCheckResult = inputHandler.checkInputNull(username, password)
-        if fieldNullCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
-            return [resultCodes.NO_TOKEN, fieldNullCheckResult]
+        resultOfNullFieldCheck = inputHandler.checkInputNull(username, password)
+        if resultOfNullFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return [resultCodes.NO_TOKEN, resultOfNullFieldCheck]
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if fields are empty strings
-        fieldEmptyCheckResult = inputHandler.handleEmptyFields(user)
-        if fieldEmptyCheckResult != resultCodes.SUCCESS_FIELDS_FILLED:
-            return [resultCodes.NO_TOKEN, fieldEmptyCheckResult]
+        resultOfEmptyFieldCheck = inputHandler.handleEmptyInputFields(user)
+        if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
+            return [resultCodes.NO_TOKEN, resultOfEmptyFieldCheck]
 
         # check if user exists
         doesUsernameExist = DBA.checkForExistingUsername(user)

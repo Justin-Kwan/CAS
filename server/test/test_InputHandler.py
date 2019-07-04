@@ -22,46 +22,46 @@ def test_checkInputNull():
     assert inputHandler.checkInputNull('username123', None) == 'EMPTY_PASSWORD'
     assert inputHandler.checkInputNull('username123', 'password123') == 'ALL_FIELDS_FILLED'
 
-def test_checkTextEmpty():
-    assert inputHandler.checkTextEmpty('Not Empty') == False
-    assert inputHandler.checkTextEmpty('') == True
-    assert inputHandler.checkTextEmpty('0987*') == False
+def test_checkInputEmpty():
+    assert inputHandler.checkInputEmpty('Not Empty') == False
+    assert inputHandler.checkInputEmpty('') == True
+    assert inputHandler.checkInputEmpty('0987*') == False
 
 # testing username and password length constraints for input validation
-def test_checkInputLength():
+def test_verifyInputLength():
     # middle case
-    assert inputHandler.checkInputLength('USERNAME', 'testusername') == True
+    assert inputHandler.verifyInputLength('USERNAME', 'testusername') == True
     # edge case
-    assert inputHandler.checkInputLength('USERNAME', 'usrnmm') == True
-    assert inputHandler.checkInputLength('USERNAME', 'testusernametestusernametestusernam') == True
-    assert inputHandler.checkInputLength('USERNAME', 'testusernametestusernametestusername') == False
-    assert inputHandler.checkInputLength('USERNAME', 'usrnm') == False
-    assert inputHandler.checkInputLength('USERNAME', '') == False
-    assert inputHandler.checkInputLength('USERNAME', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
+    assert inputHandler.verifyInputLength('USERNAME', 'usrnmm') == True
+    assert inputHandler.verifyInputLength('USERNAME', 'testusernametestusernametestusernam') == True
+    assert inputHandler.verifyInputLength('USERNAME', 'testusernametestusernametestusername') == False
+    assert inputHandler.verifyInputLength('USERNAME', 'usrnm') == False
+    assert inputHandler.verifyInputLength('USERNAME', '') == False
+    assert inputHandler.verifyInputLength('USERNAME', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
 
-    assert inputHandler.checkInputLength('PASSWORD', 'usrnmmff') == True
-    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernam') == True
-    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu;') == False
-    assert inputHandler.checkInputLength('PASSWORD', 'usrnmdd') == False
-    assert inputHandler.checkInputLength('PASSWORD', '') == False
-    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu') == True
-    assert inputHandler.checkInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
+    assert inputHandler.verifyInputLength('PASSWORD', 'usrnmmff') == True
+    assert inputHandler.verifyInputLength('PASSWORD', 'testusernametestusernametestusernam') == True
+    assert inputHandler.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu;') == False
+    assert inputHandler.verifyInputLength('PASSWORD', 'usrnmdd') == False
+    assert inputHandler.verifyInputLength('PASSWORD', '') == False
+    assert inputHandler.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu') == True
+    assert inputHandler.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
 
-def test_handleEmptyFields():
+def test_handleEmptyInputFields():
     user = getUser('', '')
-    assert inputHandler.handleEmptyFields(user) == 'EMPTY_FIELDS'
+    assert inputHandler.handleEmptyInputFields(user) == 'EMPTY_FIELDS'
     del user
 
     user = getUser('', 'password')
-    assert inputHandler.handleEmptyFields(user) == 'EMPTY_USERNAME'
+    assert inputHandler.handleEmptyInputFields(user) == 'EMPTY_USERNAME'
     del user
 
     user = getUser('username', '')
-    assert inputHandler.handleEmptyFields(user) == 'EMPTY_PASSWORD'
+    assert inputHandler.handleEmptyInputFields(user) == 'EMPTY_PASSWORD'
     del user
 
     user = getUser('username', 'password')
-    assert inputHandler.handleEmptyFields(user) == 'ALL_FIELDS_FILLED'
+    assert inputHandler.handleEmptyInputFields(user) == 'ALL_FIELDS_FILLED'
     del user
 
 def test_handleInputLengthChecks():
@@ -101,21 +101,21 @@ def test_handleInputLengthChecks():
     assert inputHandler.handleInputLengthChecks(user) == 'INVALID_PASSWORD_LENGTH'
     del user
 
-def test_checkForInvalidUsernameChars():
+def test_verifyUsernameChars():
     user = getUser('string2', 'password123')
-    assert inputHandler.checkForInvalidUsernameChars(user) == True
+    assert inputHandler.verifyUsernameChars(user) == True
     del user
 
     user = getUser('fake$username)', 'password123')
-    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    assert inputHandler.verifyUsernameChars(user) == False
     del user
 
     user = getUser(')(*&^)', 'password123')
-    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    assert inputHandler.verifyUsernameChars(user) == False
     del user
 
     user = getUser(')(*&^)textTest*&^%moretestis*fun;:', 'password123')
-    assert inputHandler.checkForInvalidUsernameChars(user) == False
+    assert inputHandler.verifyUsernameChars(user) == False
     del user
 
 def test_verifyPassword():

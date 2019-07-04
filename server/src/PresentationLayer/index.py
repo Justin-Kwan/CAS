@@ -1,9 +1,14 @@
+# @author: Justin Kwan
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 from SignUpHandler      import SignUpHandler
 from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
+
+RESULT_CODE = 1
+SECURITY_TOKEN = 0
 
 app = Flask(__name__)
 
@@ -46,10 +51,10 @@ def signUpSubmit():
         signUpHandler = SignUpHandler()
         IRD = IndexReturnDecider()
 
-        username = request.form['username']
-        password = request.form['password']
+        enteredUsername = request.form['username']
+        enteredPassword = request.form['password']
 
-        resultCode = signUpHandler.handleUserSignUp(username, password)
+        resultCode = signUpHandler.handleUserSignUp(enteredUsername, enteredPassword)
         redirectPage = IRD.determineSignUpRedirectPage(resultCode)
         return redirect(url_for(redirectPage))
 
@@ -75,21 +80,21 @@ def loginSubmit():
         loginHandler = LoginHandler()
         IRD = IndexReturnDecider()
 
-        username = request.form['username']
-        password = request.form['password']
+        enteredUsername = request.form['username']
+        enteredPassword = request.form['password']
 
-        # list of token and result code returned if successful
-        resultPackage = loginHandler.handleUserLogin(username, password)
-        isTokenReturned = IRD.checkIfTokenReturned(resultPackage[1])
+        # list of token and result code is returned if successful
+        resultPackage = loginHandler.handleUserLogin(enteredUsername, enteredPassword)
+        isTokenReturned = IRD.checkIfTokenReturned(resultPackage[RESULT_CODE])
 
         if isTokenReturned:
-            securityToken = resultPackage[0]
+            securityToken = resultPackage[SECURITY_TOKEN]
+
             # return a json web security token
             return jsonify({
                 'success': 'true',
                 'token': securityToken
             })
         else:
-            # determine redirect page using result code
-            redirectPage = IRD.determineLoginRedirectPage(resultPackage[1])
+            redirectPage = IRD.determineLoginRedirectPage(resultPackage[RESULT_CODE])
             return redirect(url_for(redirectPage))

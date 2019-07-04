@@ -38,7 +38,8 @@ class DatabaseAccessor():
 
     def checkForExistingUsername(self, user):
         selectedUsername = self.selectUsername(user)
-        return selectedUsername == user.getUsername()
+        doesUsernameExist = selectedUsername == user.getUsername()
+        return doesUsernameExist
 
     def clearDatabase(self):
         cursor.execute('DELETE FROM Users')
@@ -51,5 +52,6 @@ class DatabaseAccessor():
     def handleQueryReturn(self, returnItem):
         try:
             return returnItem[0]
+        # if no list item at index 0
         except:
             return None
