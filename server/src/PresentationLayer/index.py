@@ -3,12 +3,18 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from SignUpHandler      import SignUpHandler
 from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
+from HtmlInfoBars       import HtmlInfoBars
+from ResultCodes        import ResultCodes
 
 RESULT_CODE = 1
 SECURITY_TOKEN = 0
+
+htmlInfoBars = HtmlInfoBars()
+resultCodes  = ResultCodes()
 
 app = Flask(__name__)
 
@@ -18,35 +24,35 @@ app = Flask(__name__)
 
 @app.route("/signUpSuccess")
 def signUpSuccess():
-    return render_template('SignUpPages/SignUpSuccess.html')
+    return htmlInfoBars.SUCCESS, resultCodes.HTTP_201_CREATED
 
 @app.route("/signUpError=existingUsername")
 def signUpExistingUsername():
-    return render_template('SignUpPages/SignUpErrorExistingUsername.html')
+    return htmlInfoBars.ERROR_DUPLICATE_USERNAME, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
 
 @app.route("/signUpError=invalidUsernameCharacters")
 def signUpInvalidUsernameCharacters():
-    return render_template('SignUpPages/SignUpErrorInvalidUsernameCharacters.html')
+    return htmlInfoBars.ERROR_INVALID_USERNAME_CHARS, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
 
 @app.route("/signUpError=usernameOutOfRange")
 def signUpUsernameOutOfRange():
-    return render_template('SignUpPages/SignUpErrorUsernameOutOfRange.html')
+    return htmlInfoBars.ERROR_USERNAME_LENGTH_INVALID, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
 
 @app.route("/signUpError=passwordOutOfRange")
 def signUpPasswordOutOfRange():
-    return render_template('SignUpPages/SignUpErrorPasswordOutOfRange.html')
+    return htmlInfoBars.ERROR_PASSWORD_LENGTH_INVALID, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
 
 @app.route("/signUpError=emptyFields")
 def signUpEmptyFields():
-    return render_template('SignUpPages/SignUpErrorEmptyFields.html')
+    return htmlInfoBars.ERROR_EMPTY_FIELDS, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
 
 @app.route("/signUp", methods=['GET'])
 def signUp():
-    return render_template('SignUpPages/SignUp.html')
-
+    return render_template('SignUpPages/SignUp.html'), resultCodes.HTTP_200_OK
 
 @app.route("/signUpSubmit", methods=['POST'])
 def signUpSubmit():
+
     if request.method == 'POST':
         signUpHandler = SignUpHandler()
         IRD = IndexReturnDecider()
