@@ -1,20 +1,19 @@
 # @author: Justin Kwan
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 from SignUpHandler      import SignUpHandler
 from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
-from HtmlInfoBars       import HtmlInfoBars
 from ResultCodes        import ResultCodes
 
-RESULT_CODE = 1
+RESULT_CODE    = 1
 SECURITY_TOKEN = 0
+THREE_HOURS    = 10800  # 3hrs in secs
 
-htmlInfoBars = HtmlInfoBars()
-resultCodes  = ResultCodes()
+resultCodes = ResultCodes()
 
 app = Flask(__name__)
 
@@ -24,27 +23,27 @@ app = Flask(__name__)
 
 @app.route("/signUpSuccess")
 def signUpSuccess():
-    return htmlInfoBars.SUCCESS, resultCodes.SUCCESS_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpSuccess.html'), resultCodes.SUCCESS_USER_SIGN_UP
 
 @app.route("/signUpError=existingUsername")
 def signUpExistingUsername():
-    return htmlInfoBars.ERROR_DUPLICATE_USERNAME, resultCodes.ERROR_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpErrorExistingUsername.html'), resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=invalidUsernameCharacters")
 def signUpInvalidUsernameCharacters():
-    return htmlInfoBars.ERROR_INVALID_USERNAME_CHARS, resultCodes.ERROR_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpErrorInvalidUsernameCharacters.html'), resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=usernameOutOfRange")
 def signUpUsernameOutOfRange():
-    return htmlInfoBars.ERROR_USERNAME_LENGTH_INVALID, resultCodes.ERROR_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpErrorUsernameOutOfRange.html'), resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=passwordOutOfRange")
 def signUpPasswordOutOfRange():
-    return htmlInfoBars.ERROR_PASSWORD_LENGTH_INVALID, resultCodes.ERROR_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpErrorPasswordOutOfRange.html'), resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=emptyFields")
 def signUpEmptyFields():
-    return htmlInfoBars.ERROR_EMPTY_FIELDS, resultCodes.ERROR_USER_SIGN_UP
+    return render_template('SignUpPages/SignUpErrorEmptyFields.html'), resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUp", methods=['GET'])
 def signUp():
@@ -96,11 +95,10 @@ def loginSubmit():
         if isTokenReturned:
             securityToken = resultPackage[SECURITY_TOKEN]
 
-            # return a json web security token
-            return jsonify({
-                'success': 'true',
-                'token': securityToken
-            })
+            '''redirect to other service url'''
+            response = make_response(redirect('http://www.cryptocost.live/'))
+            response.set_cookie('security token', securityToken, max_age = THREE_HOURS)
+            return response
         else:
             redirectPage = IRD.determineLoginRedirectPage(resultPackage[RESULT_CODE])
             return redirect(url_for(redirectPage))
