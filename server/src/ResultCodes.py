@@ -19,9 +19,5 @@ class ResultCodes():
 
     # status return codes for index
     HTTP_200_OK                            = 200
-    HTTP_201_CREATED                       = 201
-    HTTP_202_ACCEPTED                      = 202
-    HTTP_203_NON_AUTHORITATIVE_INFORMATION = 203
-    HTTP_204_NO_CONTENT                    = 204
-    HTTP_205_RESET_CONTENT                 = 205
-    HTTP_206_PARTIAL_CONTENT               = 206
+    SUCCESS_USER_SIGN_UP                   = 201
+    ERROR_USER_SIGN_UP                     = 202

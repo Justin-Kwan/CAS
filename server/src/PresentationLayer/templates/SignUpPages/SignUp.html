@@ -47,7 +47,7 @@
         </div>
     </nav>
 
-    <span id="sign-up-body">
+    <span id="sign-up-page-body">
     <div class="row">
         <div class="col-6">
             <div class="img">
@@ -61,21 +61,22 @@
             <br></br>
             <br></br>
 
-            <span id="sign-up-info-bar">
+            <span id="sign-up-page-info-bar">
               <br></br>
             </span>
 
             <h1>Sign Up!</h1>
 
-            <form class="form" id="signUpForm">
+            <form action="http://127.0.0.1:5000/signUpSubmit" method="post" onsubmit="this.submit(); this.reset(); return false;">
                 <div class="form-group">
                     <input type="text" class="form-control vcheck col-md-6" name="username" id="username" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control vcheck col-md-6" name="password" id="password" placeholder="Password">
                 </div>
-                <button type="submit" id="submit" class="btn btn-primary">Signup</button>
+                <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Login</button>
             </form>
+
 
         </div>
 
@@ -83,7 +84,9 @@
   </span>
 
 <!--link to JS files-->
+<!-- <script type="text/javascript" src="{{url_for('static', filename='./client/src/HtmlUpdateHandler.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='./client/src/HttpRequestMaker.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='./client/src/FormSubmitHandler.js')}}"></script> -->
 
 </body>
 

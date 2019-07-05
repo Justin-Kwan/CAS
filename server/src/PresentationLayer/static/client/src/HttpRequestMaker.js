@@ -1,37 +1,25 @@
+'use strict';
 
 
-let responseStatusCode;
-let signUpForm = document.getElementById('signUpForm')
+class HttpRequestMaker {
 
-signUpForm.addEventListener('submit', function(event) {
+  async requestSignUp(formData, callback) {
 
-  event.preventDefault();
+      const response = await fetch('http://127.0.0.1:5000/signUpSubmit', {
+        method: 'post',
+        body: formData
+      });
 
-  let formData = new FormData(this);
+      const newComponentHtml = await response.text();
+      const responseStatusCode = await response.status;
 
-  fetch('http://127.0.0.1:5000/signUpSubmit', {
-    method: 'post',
-    body: formData
-  })
-    .then(function(response) {
+      console.log('server status code: ' + responseStatusCode);
 
-      responseStatusCode = response.status;
-      return response.text();
+      if(callback) {
+        callback(newComponentHtml, responseStatusCode);
+      }
+
+  }
 
 
-    }).then(function(text) {
-
-        console.log('server status code: ' + responseStatusCode)
-
-        if(responseStatusCode == 201) {
-          document.getElementById("sign-up-body").innerHTML = text;
-        }
-        else if(responseStatusCode == 203) {
-          document.getElementById("sign-up-info-bar").innerHTML = text;
-        }
-
-    }).catch(function(error) {
-      console.error(error);
-    })
-
-});
+}

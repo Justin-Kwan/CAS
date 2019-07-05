@@ -24,27 +24,27 @@ app = Flask(__name__)
 
 @app.route("/signUpSuccess")
 def signUpSuccess():
-    return htmlInfoBars.SUCCESS, resultCodes.HTTP_201_CREATED
+    return htmlInfoBars.SUCCESS, resultCodes.SUCCESS_USER_SIGN_UP
 
 @app.route("/signUpError=existingUsername")
 def signUpExistingUsername():
-    return htmlInfoBars.ERROR_DUPLICATE_USERNAME, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+    return htmlInfoBars.ERROR_DUPLICATE_USERNAME, resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=invalidUsernameCharacters")
 def signUpInvalidUsernameCharacters():
-    return htmlInfoBars.ERROR_INVALID_USERNAME_CHARS, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+    return htmlInfoBars.ERROR_INVALID_USERNAME_CHARS, resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=usernameOutOfRange")
 def signUpUsernameOutOfRange():
-    return htmlInfoBars.ERROR_USERNAME_LENGTH_INVALID, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+    return htmlInfoBars.ERROR_USERNAME_LENGTH_INVALID, resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=passwordOutOfRange")
 def signUpPasswordOutOfRange():
-    return htmlInfoBars.ERROR_PASSWORD_LENGTH_INVALID, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+    return htmlInfoBars.ERROR_PASSWORD_LENGTH_INVALID, resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUpError=emptyFields")
 def signUpEmptyFields():
-    return htmlInfoBars.ERROR_EMPTY_FIELDS, resultCodes.HTTP_203_NON_AUTHORITATIVE_INFORMATION
+    return htmlInfoBars.ERROR_EMPTY_FIELDS, resultCodes.ERROR_USER_SIGN_UP
 
 @app.route("/signUp", methods=['GET'])
 def signUp():
