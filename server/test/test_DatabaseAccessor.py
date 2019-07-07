@@ -2,13 +2,14 @@ import pytest
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from DatabaseAccessor import DatabaseAccessor
-from InputHandler     import InputHandler
+from InputValidator   import InputValidator
 from User             import User
 
 DBA = DatabaseAccessor()
-inputHandler  = InputHandler()
+inputValidator  = InputValidator()
 
 def getUser(username, password, userId):
     user = User(username, password)

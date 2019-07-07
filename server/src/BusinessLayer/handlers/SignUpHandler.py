@@ -2,13 +2,14 @@ import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
-from InputHandler     import InputHandler
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
+from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor
 from ResultCodes      import ResultCodes
 from User             import User
 import uuid
 
-inputHandler = InputHandler()
+inputValidator = InputValidator()
 resultCodes  = ResultCodes()
 DBA          = DatabaseAccessor()
 
@@ -17,24 +18,24 @@ class SignUpHandler():
     def handleUserSignUp(self, username, password):
 
         # check if inputs are null
-        resultOfNullFieldCheck = inputHandler.checkInputNull(username, password)
+        resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
         if resultOfNullFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
             return resultOfNullFieldCheck
 
         user = self.getUser(str(username.lower()), str(password))
 
         # check if inputs are empty strings
-        resultOfEmptyFieldCheck = inputHandler.handleEmptyInputFields(user)
+        resultOfEmptyFieldCheck = inputValidator.handleEmptyInputFields(user)
         if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
             return resultOfEmptyFieldCheck
 
         # check for proper string input lengths
-        resultOfInputLengthCheck = inputHandler.handleInputLengthChecks(user)
+        resultOfInputLengthCheck = inputValidator.handleInputLengthChecks(user)
         if resultOfInputLengthCheck != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH:
             return resultOfInputLengthCheck
 
         # check for invalid characters in inputs
-        areUsernameCharsValid = inputHandler.verifyUsernameChars(user)
+        areUsernameCharsValid = inputValidator.verifyUsernameChars(user)
         if areUsernameCharsValid == False:
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 

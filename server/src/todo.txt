@@ -3,6 +3,11 @@
 #Server Refactoring
 
   - double password confirmation?
+  
+  - signup waterloo math day
+  - change atom theme
+  - download install java maven stuff
 
-  - change button color?
+
+
   - Need Google Captcha

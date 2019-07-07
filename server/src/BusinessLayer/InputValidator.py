@@ -5,7 +5,7 @@ import bcrypt
 
 resultCodes = ResultCodes()
 
-class InputHandler():
+class InputValidator():
 
     def checkInputNull(self, username, password):
         USERNAME_AND_PASSWORD_NULL        = username == None and password == None
