@@ -3,10 +3,6 @@
 #Server Refactoring
 
   - double password confirmation?
-  
-  - signup waterloo math day
-  - change atom theme
-  - download install java maven stuff
 
 
 

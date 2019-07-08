@@ -30,13 +30,13 @@ class LoginHandler():
 
         # check if user exists
         doesUsernameExist = DBA.checkForExistingUsername(user)
-        if doesUsernameExist == False:
+        if not doesUsernameExist:
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         # check if input password matches user's password
         selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
         isPasswordCorrect = inputValidator.verifyPassword(user, selectedHashedPassword)
-        if isPasswordCorrect == False:
+        if not isPasswordCorrect:
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         userId = DBA.selectUserId(user)

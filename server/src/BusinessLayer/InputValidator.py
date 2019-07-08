@@ -51,11 +51,11 @@ class InputValidator():
         isUsernameLengthOk = self.verifyInputLength('USERNAME', username)
         isPasswordLengthOk = self.verifyInputLength('PASSWORD', password)
 
-        if isUsernameLengthOk == True and isPasswordLengthOk == True:
+        if isUsernameLengthOk and isPasswordLengthOk:
             return resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH
-        elif isUsernameLengthOk == False and isPasswordLengthOk == True :
+        elif not isUsernameLengthOk and isPasswordLengthOk:
             return resultCodes.ERROR_USERNAME_LENGTH_INVALID
-        elif isUsernameLengthOk == True and isPasswordLengthOk == False:
+        elif isUsernameLengthOk and not isPasswordLengthOk:
             return resultCodes.ERROR_PASSWORD_LENGTH_INVALID
         else:
             return resultCodes.ERROR_USERNAME_LENGTH_INVALID
@@ -70,7 +70,7 @@ class InputValidator():
         username = user.getUsername()
 
         for currentChar in username:
-            if currentChar.isalpha() == False and currentChar.isdigit() == False:
+            if not currentChar.isalpha() and not currentChar.isdigit():
                 return False
         return True
 

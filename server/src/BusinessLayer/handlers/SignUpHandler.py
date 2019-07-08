@@ -36,7 +36,7 @@ class SignUpHandler():
 
         # check for invalid characters in inputs
         areUsernameCharsValid = inputValidator.verifyUsernameChars(user)
-        if areUsernameCharsValid == False:
+        if not areUsernameCharsValid:
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 
         # check if username already exists

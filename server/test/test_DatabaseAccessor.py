@@ -3,13 +3,13 @@ import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DatabaseLayer')
 from DatabaseAccessor import DatabaseAccessor
 from InputValidator   import InputValidator
 from User             import User
 
 DBA = DatabaseAccessor()
-inputValidator  = InputValidator()
+inputValidator = InputValidator()
 
 def getUser(username, password, userId):
     user = User(username, password)
