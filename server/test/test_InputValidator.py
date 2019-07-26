@@ -13,8 +13,8 @@ DBA = DatabaseAccessor()
 
 def getUser(username, password):
     user = User(username, password)
-    user.encryptAndUpdatePassword(password)
-    user.generateAndUpdateUserId()
+    user.encryptAndSetPassword(password)
+    user.generateAndSetUserId()
     return user
 
 def test_checkInputNull():

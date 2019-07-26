@@ -9,9 +9,9 @@ from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
 from ResultCodes        import ResultCodes
 
-RESULT_CODE    = 1
-SECURITY_TOKEN = 0
-THREE_HOURS    = 10800  # 3hrs in secs
+RESULT_CODE = 1
+AUTH_TOKEN  = 0
+THREE_HOURS = 10800  # 3hrs in secs
 
 resultCodes = ResultCodes()
 
@@ -96,8 +96,8 @@ def loginSubmit():
             securityToken = resultPackage[SECURITY_TOKEN]
 
             '''redirect to other service url'''
-            response = make_response(redirect('http://www.cryptocost.live/'))
-            response.set_cookie('security token', securityToken, max_age = THREE_HOURS)
+            response = make_response(redirect('http://127.0.0.1:8000/createPortfolio'))
+            response.set_cookie('security_token', securityToken, max_age = THREE_HOURS)
             return response
         else:
             redirectPage = IRD.determineLoginRedirectPage(resultPackage[RESULT_CODE])

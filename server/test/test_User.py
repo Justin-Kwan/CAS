@@ -6,8 +6,8 @@ import jwt
 
 def getUser(username, password):
     user = User(username, password)
-    user.encryptAndUpdatePassword(password)
-    user.generateAndUpdateUserId()
+    user.encryptAndSetPassword(password)
+    user.generateAndSetUserId()
     return user
 
 def test_getUsername():
@@ -31,48 +31,48 @@ def test_getUserId():
     assert len(user.getUserId()) == 36
     del user
 
-def test_updateUserId():
+def test_setUserId():
     user = getUser('username8', 'password8')
-    user.updateUserId('#123')
+    user.setUserId('#123')
     assert user.getUserId() == '#123'
     del user
 
     user = getUser('username9', 'password9')
-    user.updateUserId(123)
+    user.setUserId(123)
     assert user.getUserId() == 123
     del user
 
-def test_generateAndUpdateUserId():
+def test_generateAndSetUserId():
     user = getUser('username10', 'password10')
-    user.generateAndUpdateUserId()
+    user.generateAndSetUserId()
     assert user.getUserId() != None
     assert len(user.getUserId()) == 36
 
-def test_getSecurityToken():
+def test_getAuthToken():
     user = getUser('username5', 'password5')
-    user.generateAndUpdateSecurityToken()
-    securityToken = user.getSecurityToken()
+    user.generateAndSetAuthToken()
+    authToken = user.getAuthToken()
 
-    assert securityToken != None
+    assert authToken != None
 
-    userData = jwt.decode(securityToken, 'fake_secret_key', algorithms=['HS256'])
+    userData = jwt.decode(authToken, 'fake_secret_key', algorithms=['HS256'])
 
     assert 'username' in userData
     assert 'username5' in userData.values()
     assert 'user id' in userData
     assert user.getUserId() in userData.values()
 
-def test_encryptAndUpdatePassword():
+def test_encryptAndSetPassword():
     user = getUser('username6', 'password6')
     assert user.getHashedPassword() != None
     del user
 
-def test_generateAndUpdateSecurityToken():
+def test_generateAndSetAuthToken():
     user = getUser('username7', 'password7')
-    user.generateAndUpdateSecurityToken()
-    securityToken = user.getSecurityToken()
+    user.generateAndSetAuthToken()
+    authToken = user.getAuthToken()
 
-    userData = jwt.decode(securityToken, 'fake_secret_key', algorithms=['HS256'])
+    userData = jwt.decode(authToken, 'fake_secret_key', algorithms=['HS256'])
 
     assert 'username' in userData
     assert 'username7' in userData.values()

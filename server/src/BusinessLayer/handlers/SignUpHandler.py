@@ -10,8 +10,8 @@ from User             import User
 import uuid
 
 inputValidator = InputValidator()
-resultCodes  = ResultCodes()
-DBA          = DatabaseAccessor()
+resultCodes    = ResultCodes()
+DBA            = DatabaseAccessor()
 
 class SignUpHandler():
 
@@ -50,6 +50,6 @@ class SignUpHandler():
 
     def getUser(self, username, password):
         user = User(username, password)
-        user.encryptAndUpdatePassword(password)
-        user.generateAndUpdateUserId()
+        user.encryptAndSetPassword(password)
+        user.generateAndSetUserId()
         return user

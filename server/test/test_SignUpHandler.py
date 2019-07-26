@@ -10,7 +10,7 @@ DBA = DatabaseAccessor()
 
 def getUser(username, password):
     user = User(username, password)
-    user.encryptAndUpdatePassword(password)
+    user.encryptAndSetPassword(password)
     user.generateAndUpdateUserId()
     return user
 

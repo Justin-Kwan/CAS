@@ -40,11 +40,11 @@ class LoginHandler():
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         userId = DBA.selectUserId(user)
-        user.updateUserId(userId)
-        user.generateAndUpdateSecurityToken()
-        securityToken = user.getSecurityToken()
+        user.setUserId(userId)
+        user.generateAndSetAuthToken()
+        authToken = user.getAuthToken()
 
-        return [securityToken, resultCodes.SUCCESS]
+        return [authToken, resultCodes.SUCCESS]
 
     def getUser(self, username, password):
         user = User(username, password)

@@ -13,8 +13,8 @@ inputValidator = InputValidator()
 
 def getUser(username, password, userId):
     user = User(username, password)
-    user.encryptAndUpdatePassword(password)
-    user.updateUserId(userId)
+    user.encryptAndSetPassword(password)
+    user.setUserId(userId)
     return user
 
 # test username, password and user id inserting function
@@ -58,7 +58,7 @@ def test_insertUserInfo():
     DBA.clearDatabase()
 
     user = getUser('fake-user', 'password123', '')
-    user.generateAndUpdateUserId()
+    user.generateAndSetUserId()
     DBA.insertUserInfo(user)
     selectedUsername = DBA.selectUsername(user)
     selectedHashedPassword = DBA.selectHashedPassword(user)
