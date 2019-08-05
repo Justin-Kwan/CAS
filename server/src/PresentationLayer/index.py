@@ -69,7 +69,13 @@ def signUpSubmit():
 
 @app.route("/login", methods=['GET'])
 def login():
-    return render_template('LoginPages/Login.html')
+    # if already a token in user's browser when requesting login, redirect to
+    # crud service
+    if 'auth_token' in request.cookies:
+        response = make_response(redirect('http://127.0.0.1:8000/getPortfolio'))
+        return response
+    else:
+        return render_template('LoginPages/Login.html')
 
 @app.route("/loginError=emptyFields")
 def loginEmptyFields():
@@ -93,11 +99,11 @@ def loginSubmit():
         isTokenReturned = IRD.checkIfTokenReturned(resultPackage[RESULT_CODE])
 
         if isTokenReturned:
-            securityToken = resultPackage[SECURITY_TOKEN]
+            authToken = resultPackage[AUTH_TOKEN]
 
             '''redirect to other service url'''
-            response = make_response(redirect('http://127.0.0.1:8000/createPortfolio'))
-            response.set_cookie('security_token', securityToken, max_age = THREE_HOURS)
+            response = make_response(redirect('http://127.0.0.1:8000/getPortfolio'))
+            response.set_cookie('auth_token', authToken, max_age = THREE_HOURS)
             return response
         else:
             redirectPage = IRD.determineLoginRedirectPage(resultPackage[RESULT_CODE])
