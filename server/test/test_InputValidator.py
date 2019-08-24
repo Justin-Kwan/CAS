@@ -120,6 +120,8 @@ def test_verifyUsernameChars():
     del user
 
 def test_verifyPassword():
+    DBA.createConnection()
+
     user1 = getUser('username1', 'password1')
     DBA.insertUserInfo(user1)
     user2 = getUser('username1', 'password1')
@@ -152,3 +154,4 @@ def test_verifyPassword():
     del user1
     del user2
     DBA.clearDatabase()
+    DBA.closeConnection()

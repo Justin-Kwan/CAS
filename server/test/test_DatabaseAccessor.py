@@ -8,8 +8,8 @@ from DatabaseAccessor import DatabaseAccessor
 from InputValidator   import InputValidator
 from User             import User
 
-DBA = DatabaseAccessor()
 inputValidator = InputValidator()
+DBA = DatabaseAccessor()
 
 def getUser(username, password, userId):
     user = User(username, password)
@@ -19,6 +19,7 @@ def getUser(username, password, userId):
 
 # test username, password and user id inserting function
 def test_insertUserInfo():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     user = getUser('testUsername1', 'testPassword1', 'testId1')
@@ -69,9 +70,11 @@ def test_insertUserInfo():
 
     del user
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 # test username selecting function
 def test_selectUsername():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     user1 = getUser('testUsername1', 'testPassword1', 'testId')
@@ -101,9 +104,11 @@ def test_selectUsername():
     del user2
     del user3
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 # test password selecting function
 def test_selectHashedPassword():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     user1 = getUser('rando', 'testPassword1', 'testId')
@@ -133,9 +138,11 @@ def test_selectHashedPassword():
     del user2
     del user3
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 # test user id selecting function
 def test_selectUserId():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     user1 = getUser('name1', 'teddddstPassword1', 'testId1')
@@ -165,8 +172,10 @@ def test_selectUserId():
     del user2
     del user3
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 def test_checkForExistingUsername():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     user1 = getUser('randomename1', 'teddddstPassword1', 'fakeid1')
@@ -216,6 +225,7 @@ def test_checkForExistingUsername():
     del user3
     del user4
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 
 def test_handleQueryReturn():

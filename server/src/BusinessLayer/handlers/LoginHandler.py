@@ -28,6 +28,8 @@ class LoginHandler():
         if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
             return [resultCodes.NO_TOKEN, resultOfEmptyFieldCheck]
 
+        DBA.createConnection()
+
         # check if user exists
         doesUsernameExist = DBA.checkForExistingUsername(user)
         if not doesUsernameExist:
@@ -40,6 +42,8 @@ class LoginHandler():
             return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
 
         userId = DBA.selectUserId(user)
+        DBA.closeConnection()
+
         user.setUserId(userId)
         user.generateAndSetAuthToken()
         authToken = user.getAuthToken()

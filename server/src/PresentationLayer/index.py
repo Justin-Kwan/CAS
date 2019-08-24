@@ -100,8 +100,7 @@ def loginSubmit():
 
         if isTokenReturned:
             authToken = resultPackage[AUTH_TOKEN]
-
-            '''redirect to other service url'''
+            # redirect to other service url
             response = make_response(redirect('http://127.0.0.1:8000/getPortfolio'))
             response.set_cookie('auth_token', authToken, max_age = THREE_HOURS)
             return response

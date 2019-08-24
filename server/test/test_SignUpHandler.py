@@ -15,6 +15,7 @@ def getUser(username, password):
     return user
 
 def test_handleUserSignUp():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     # empty field(s) tests
@@ -66,8 +67,10 @@ def test_handleUserSignUp():
     assert signUpHandler.handleUserSignUp('GoodUsername', 'GoodPassword123') == 'SUCCESS'
 
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 def test_getUser():
+    DBA.createConnection()
     user = signUpHandler.getUser('username1', 'password1')
     assert user.getUsername() == 'username1'
     assert user.getTextPassword() == 'password1'
@@ -77,3 +80,4 @@ def test_getUser():
 
     del user
     DBA.clearDatabase()
+    DBA.closeConnection()

@@ -39,6 +39,8 @@ class SignUpHandler():
         if not areUsernameCharsValid:
             return resultCodes.ERROR_INVALID_USERNAME_CHARS
 
+        DBA.createConnection()
+
         # check if username already exists
         doesUsernameExist = DBA.checkForExistingUsername(user)
         if doesUsernameExist:
@@ -46,6 +48,7 @@ class SignUpHandler():
 
         # insert user info into db
         DBA.insertUserInfo(user)
+        DBA.closeConnection()
         return resultCodes.SUCCESS
 
     def getUser(self, username, password):

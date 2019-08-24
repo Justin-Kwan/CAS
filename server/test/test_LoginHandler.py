@@ -14,7 +14,9 @@ DBA = DatabaseAccessor()
 RESULT_CODE = 1
 AUTH_TOKEN  = 0
 
+
 def test_handleUserLogin():
+    DBA.createConnection()
     DBA.clearDatabase()
 
     # success test login
@@ -70,8 +72,10 @@ def test_handleUserLogin():
     assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
 
     DBA.clearDatabase()
+    DBA.closeConnection()
 
 def test_getUser():
+    DBA.createConnection()
     user = loginHandler.getUser('username1', 'password1')
     assert user.getUsername() == 'username1'
     assert user.getTextPassword() == 'password1'
@@ -80,3 +84,4 @@ def test_getUser():
 
     del user
     DBA.clearDatabase()
+    DBA.closeConnection()
