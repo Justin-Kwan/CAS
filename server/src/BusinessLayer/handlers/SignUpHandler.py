@@ -49,7 +49,7 @@ class SignUpHandler():
         # insert user info into db
         DBA.insertUserInfo(user)
         DBA.closeConnection()
-        return resultCodes.SUCCESS
+        return resultCodes.SUCCESS 
 
     def getUser(self, username, password):
         user = User(username, password)

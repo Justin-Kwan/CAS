@@ -1,7 +1,5 @@
 import mysql.connector
 
-
-
 class DatabaseAccessor():
 
     def __init__(self):

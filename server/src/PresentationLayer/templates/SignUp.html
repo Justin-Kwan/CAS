@@ -48,7 +48,7 @@
     </nav>
 
 
-    <div class="row">
+    <div id="form_and_button" class="row">
         <div class="col-6">
             <div class="img">
                 <img src="../static/images/signup-img.png" style="width:100%; height:100%;">
@@ -59,42 +59,73 @@
 
             <br></br>
             <br></br>
+
             <br></br>
             <br></br>
 
+            <div id="sign_up_result_bar">
+              <br></br>
+            </div>
 
-            <h1>Sign Up!</h1>
+            <h1>Signup</h1>
 
-            <form action="http://127.0.0.1:5000/signUpSubmit" method="post" onsubmit="this.submit(); this.reset(); return false;">
+            <form id="sign_up_form">
                 <div class="form-group">
                     <input type="text" class="form-control vcheck col-md-6" name="username" id="username" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control vcheck col-md-6" name="password" id="password" placeholder="Password">
                 </div>
-                <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Signup</button>
             </form>
 
+            <button type="submit" id="submit_button" class="btn btn-primary">Signup</button>
+
         </div>
+
 
     </div>
 
 </body>
 
+
+
 <script>
-    $('.vcheck').change(function() {
 
-        var username = $('#username').val();
-        var password = $('#password').val();
+  const HTML_BAR = 0;
+  const RESULT_CODE = 1;
 
-        if (username == '' || password == '') {
+  $(document).ready(function() {
 
-            $('#submit').attr('disabled', 'disabled');
-        } else {
-
-            $('#submit').removeAttr('disabled');
-        }
+    $('#submit_button').click(function() {
+      console.log("CLICKED!");
+      $("#sign_up_form").submit();
     });
+
+    $("#sign_up_form").submit(function(event) {
+
+      event.preventDefault(); //prevent default action
+      let postUrl = 'http://127.0.0.1:5000/signUpSubmit'
+      let formData = $(this).serialize(); //Encode form elements for submission
+
+
+      $.post(postUrl, formData, function(htmlResponseBar) {
+
+        console.log('SERVER RESPONSE: ' + htmlResponseBar);
+
+        if(htmlResponseBar[RESULT_CODE] == 201) {
+          $('#form_and_button').replaceWith(htmlResponseBar[HTML_BAR]);
+        }
+        else {
+          $('#sign_up_result_bar').replaceWith(htmlResponseBar[HTML_BAR]);
+        }
+
+      });
+
+    });
+
+
+  });
+
 </script>
 
 <style>

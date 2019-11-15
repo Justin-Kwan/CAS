@@ -1,6 +1,7 @@
 # @author: Justin Kwan
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
+from HtmlResultBars     import HtmlResultBars
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
@@ -9,11 +10,13 @@ from LoginHandler       import LoginHandler
 from IndexReturnDecider import IndexReturnDecider
 from ResultCodes        import ResultCodes
 
+
 RESULT_CODE = 1
 AUTH_TOKEN  = 0
 THREE_HOURS = 10800  # 3hrs in secs
 
-resultCodes = ResultCodes()
+resultCodes    = ResultCodes()
+htmlResultBars = HtmlResultBars()
 
 app = Flask(__name__)
 
@@ -23,31 +26,32 @@ app = Flask(__name__)
 
 @app.route("/signUpSuccess")
 def signUpSuccess():
-    return render_template('SignUpPages/SignUpSuccess.html'), resultCodes.SUCCESS_USER_SIGN_UP
+    print("SUCCESS", resultCodes.SUCCESS_USER_SIGN_UP)
+    return jsonify([htmlResultBars.signUpSuccess, resultCodes.SUCCESS_USER_SIGN_UP])
 
 @app.route("/signUpError=existingUsername")
 def signUpExistingUsername():
-    return render_template('SignUpPages/SignUpErrorExistingUsername.html'), resultCodes.ERROR_USER_SIGN_UP
+    return jsonify([htmlResultBars.existingUsername, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/signUpError=invalidUsernameCharacters")
 def signUpInvalidUsernameCharacters():
-    return render_template('SignUpPages/SignUpErrorInvalidUsernameCharacters.html'), resultCodes.ERROR_USER_SIGN_UP
+    return jsonify([htmlResultBars.invalidUsernameChars, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/signUpError=usernameOutOfRange")
 def signUpUsernameOutOfRange():
-    return render_template('SignUpPages/SignUpErrorUsernameOutOfRange.html'), resultCodes.ERROR_USER_SIGN_UP
+    return jsonify([htmlResultBars.usernameOutOfRange, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/signUpError=passwordOutOfRange")
 def signUpPasswordOutOfRange():
-    return render_template('SignUpPages/SignUpErrorPasswordOutOfRange.html'), resultCodes.ERROR_USER_SIGN_UP
+    return jsonify([htmlResultBars.passwordOutOfRange, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/signUpError=emptyFields")
 def signUpEmptyFields():
-    return render_template('SignUpPages/SignUpErrorEmptyFields.html'), resultCodes.ERROR_USER_SIGN_UP
+    return jsonify([htmlResultBars.signupEmptyFields, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/signUp", methods=['GET'])
 def signUp():
-    return render_template('SignUpPages/SignUp.html'), resultCodes.HTTP_200_OK
+    return render_template('SignUp.html'), resultCodes.HTTP_200_OK
 
 @app.route("/signUpSubmit", methods=['POST'])
 def signUpSubmit():
@@ -75,15 +79,15 @@ def login():
         response = make_response(redirect('http://127.0.0.1:8000/getPortfolio'))
         return response
     else:
-        return render_template('LoginPages/Login.html')
+        return render_template('Login.html')
 
 @app.route("/loginError=emptyFields")
 def loginEmptyFields():
-    return render_template('LoginPages/LoginErrorEmptyFields.html')
+    return jsonify([htmlResultBars.loginEmptyFields, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/loginError=invalidUsernameOrPassword")
 def loginInvalidUsernameOrPassword():
-    return render_template('LoginPages/LoginErrorInvalidUsernamePassword.html')
+    return jsonify([htmlResultBars.invalidUsernamePassword, resultCodes.ERROR_USER_SIGN_UP])
 
 @app.route("/loginSubmit",  methods=['POST'])
 def loginSubmit():
