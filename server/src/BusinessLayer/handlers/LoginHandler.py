@@ -1,45 +1,42 @@
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor
-from ResultCodes      import ResultCodes
 from User             import User
 
 inputValidator = InputValidator()
-resultCodes    = ResultCodes()
 DBA            = DatabaseAccessor()
 
+# HTTP Status Codes:
+#   401 - Unauthorized Login
+#   400 - Bad Login Request (Bad Input)
+#   202 - Accpeted Login
 class LoginHandler():
 
     def handleUserLogin(self, username, password):
 
-        # check if inputs are null
         resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return [resultCodes.NO_TOKEN, resultOfNullFieldCheck]
+        if resultOfNullFieldCheck != "username & password not null":
+            return (resultOfNullFieldCheck, 400)
 
         user = self.getUser(str(username.lower()), str(password))
 
-        # check if fields are empty strings
-        resultOfEmptyFieldCheck = inputValidator.handleEmptyInputFields(user)
-        if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return [resultCodes.NO_TOKEN, resultOfEmptyFieldCheck]
+        resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
+        if resultOfEmptyFieldCheck != "username & password not empty":
+            return (resultOfEmptyFieldCheck, 400)
 
         DBA.createConnection()
 
-        # check if user exists
         doesUsernameExist = DBA.checkForExistingUsername(user)
         if not doesUsernameExist:
-            return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
+            return ("username or password bad", 401)
 
-        # check if input password matches user's password
         selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
-        isPasswordCorrect = inputValidator.verifyPassword(user, selectedHashedPassword)
+        isPasswordCorrect = inputValidator.isPasswordCorrect(user, selectedHashedPassword)
         if not isPasswordCorrect:
-            return [resultCodes.NO_TOKEN, resultCodes.ERROR_INVALID_USERNAME_OR_PASSWORD]
+            return ("username or password bad", 401)
 
         userId = DBA.selectUserId(user)
         DBA.closeConnection()
@@ -48,7 +45,7 @@ class LoginHandler():
         user.generateAndSetAuthToken()
         authToken = user.getAuthToken()
 
-        return [authToken, resultCodes.SUCCESS]
+        return (authToken, 202)
 
     def getUser(self, username, password):
         user = User(username, password)

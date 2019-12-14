@@ -1,55 +1,49 @@
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
 from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor
-from ResultCodes      import ResultCodes
 from User             import User
 import uuid
 
 inputValidator = InputValidator()
-resultCodes    = ResultCodes()
 DBA            = DatabaseAccessor()
 
+# HTTP Status Codes:
+#   400 - Bad Signup Request (Bad Input)
+#   201 - Created Signup
 class SignUpHandler():
 
     def handleUserSignUp(self, username, password):
 
-        # check if inputs are null
         resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return resultOfNullFieldCheck
+        if resultOfNullFieldCheck != "username & password not null":
+            return (resultOfNullFieldCheck, 400)
 
         user = self.getUser(str(username.lower()), str(password))
 
-        # check if inputs are empty strings
-        resultOfEmptyFieldCheck = inputValidator.handleEmptyInputFields(user)
-        if resultOfEmptyFieldCheck != resultCodes.SUCCESS_FIELDS_FILLED:
-            return resultOfEmptyFieldCheck
+        resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
+        if resultOfEmptyFieldCheck != "username & password not empty":
+            return (resultOfEmptyFieldCheck, 400)
 
-        # check for proper string input lengths
-        resultOfInputLengthCheck = inputValidator.handleInputLengthChecks(user)
-        if resultOfInputLengthCheck != resultCodes.SUCCESS_USERNAME_PASSWORD_LENGTH:
-            return resultOfInputLengthCheck
+        resultOfInputLengthCheck = inputValidator.checkInputLength(user)
+        if resultOfInputLengthCheck != "username & password length ok":
+            return (resultOfInputLengthCheck, 400)
 
-        # check for invalid characters in inputs
-        areUsernameCharsValid = inputValidator.verifyUsernameChars(user)
-        if not areUsernameCharsValid:
-            return resultCodes.ERROR_INVALID_USERNAME_CHARS
+        isUsernameCharsOk = inputValidator.isUsernameCharsOk(user)
+        if not isUsernameCharsOk:
+            return ("username characters bad", 400)
 
         DBA.createConnection()
 
-        # check if username already exists
         doesUsernameExist = DBA.checkForExistingUsername(user)
         if doesUsernameExist:
-            return resultCodes.ERROR_DUPLICATE_USERNAME
+            return ("username already exists", 400)
 
-        # insert user info into db
         DBA.insertUserInfo(user)
         DBA.closeConnection()
-        return resultCodes.SUCCESS 
+        return ("signup successful", 201)
 
     def getUser(self, username, password):
         user = User(username, password)

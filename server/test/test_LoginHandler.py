@@ -11,9 +11,8 @@ signUpHandler = SignUpHandler()
 loginHandler = LoginHandler()
 DBA = DatabaseAccessor()
 
-RESULT_CODE = 1
-AUTH_TOKEN  = 0
-
+RESPONSE_STRING = 0
+RESPONSE_CODE   = 1
 
 def test_handleUserLogin():
     DBA.createConnection()
@@ -23,7 +22,8 @@ def test_handleUserLogin():
     signUpHandler.handleUserSignUp('fakename1', 'password123')
     resultPackage = loginHandler.handleUserLogin('fakename1', 'password123')
     assert resultPackage != None
-    userData = jwt.decode(resultPackage[AUTH_TOKEN], 'fake_secret_key', algorithms=['HS256'])
+    assert resultPackage[RESPONSE_CODE] == 202
+    userData = jwt.decode(resultPackage[RESPONSE_STRING], 'fake_secret_key', algorithms=['HS256'])
     assert 'username' in userData
     assert 'fakename1' in userData.values()
     assert 'user id' in userData
@@ -32,7 +32,8 @@ def test_handleUserLogin():
     signUpHandler.handleUserSignUp('fakename2', 'password345')
     resultPackage = loginHandler.handleUserLogin('fakename2', 'password345')
     assert resultPackage != None
-    userData = jwt.decode(resultPackage[AUTH_TOKEN], 'fake_secret_key', algorithms=['HS256'])
+    assert resultPackage[RESPONSE_CODE] == 202
+    userData = jwt.decode(resultPackage[RESPONSE_STRING], 'fake_secret_key', algorithms=['HS256'])
     assert 'username' in userData
     assert 'fakename2' in userData.values()
     assert 'user id' in userData
@@ -40,36 +41,41 @@ def test_handleUserLogin():
     # fail test login with wrong password
     signUpHandler.handleUserSignUp('fakename3', 'password567')
     resultPackage = loginHandler.handleUserLogin('fakename3', 'password000')
-    assert resultPackage[RESULT_CODE] == 'INVALID_USERNAME_OR_PASSWORD'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == "username or password bad"
+    assert resultPackage[RESPONSE_CODE] == 401
 
     # fail test login with non-existent username
     signUpHandler.handleUserSignUp('fakename4', 'password789')
     resultPackage = loginHandler.handleUserLogin('fakename0', 'password789')
-    assert resultPackage[RESULT_CODE] == 'INVALID_USERNAME_OR_PASSWORD'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == "username or password bad"
+    assert resultPackage[RESPONSE_CODE] == 401
 
     # fail test login with empty username & password strings
     resultPackage = loginHandler.handleUserLogin('', '')
-    assert resultPackage[RESULT_CODE] == 'EMPTY_FIELDS'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+
     resultPackage = loginHandler.handleUserLogin('fakename4', '')
-    assert resultPackage[RESULT_CODE] == 'EMPTY_PASSWORD'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'password empty'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     resultPackage = loginHandler.handleUserLogin('', 'password345')
-    assert resultPackage[RESULT_CODE] == 'EMPTY_USERNAME'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_CODE] == 400
 
     # fail test login with null username & password
     resultPackage = loginHandler.handleUserLogin(None, None)
-    assert resultPackage[RESULT_CODE] == 'EMPTY_FIELDS'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     resultPackage = loginHandler.handleUserLogin('fakename4', None)
-    assert resultPackage[RESULT_CODE] == 'EMPTY_PASSWORD'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'password null'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     resultPackage = loginHandler.handleUserLogin(None, 'password345')
-    assert resultPackage[RESULT_CODE] == 'EMPTY_USERNAME'
-    assert resultPackage[AUTH_TOKEN] == 'NO_TOKEN'
+    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_CODE] == 400
 
     DBA.clearDatabase()
     DBA.closeConnection()

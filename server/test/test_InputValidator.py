@@ -18,115 +18,91 @@ def getUser(username, password):
     return user
 
 def test_checkInputNull():
-    assert inputValidator.checkInputNull(None, None) == 'EMPTY_FIELDS'
-    assert inputValidator.checkInputNull(None, 'password123') == 'EMPTY_USERNAME'
-    assert inputValidator.checkInputNull('username123', None) == 'EMPTY_PASSWORD'
-    assert inputValidator.checkInputNull('username123', 'password123') == 'ALL_FIELDS_FILLED'
+    assert inputValidator.checkInputNull(None, None) == "username null"
+    assert inputValidator.checkInputNull(None, 'password123') == "username null"
+    assert inputValidator.checkInputNull('username123', None) == "password null"
+    assert inputValidator.checkInputNull('username123', 'password123') == "username & password not null"
+    assert inputValidator.checkInputNull('', '') == "username & password not null"
 
 def test_checkInputEmpty():
-    assert inputValidator.checkInputEmpty('Not Empty') == False
-    assert inputValidator.checkInputEmpty('') == True
-    assert inputValidator.checkInputEmpty('0987*') == False
-
-# testing username and password length constraints for input validation
-def test_verifyInputLength():
-    # middle case
-    assert inputValidator.verifyInputLength('USERNAME', 'testusername') == True
-    # edge case
-    assert inputValidator.verifyInputLength('USERNAME', 'usrnmm') == True
-    assert inputValidator.verifyInputLength('USERNAME', 'testusernametestusernametestusernam') == True
-    assert inputValidator.verifyInputLength('USERNAME', 'testusernametestusernametestusername') == False
-    assert inputValidator.verifyInputLength('USERNAME', 'usrnm') == False
-    assert inputValidator.verifyInputLength('USERNAME', '') == False
-    assert inputValidator.verifyInputLength('USERNAME', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
-
-    assert inputValidator.verifyInputLength('PASSWORD', 'usrnmmff') == True
-    assert inputValidator.verifyInputLength('PASSWORD', 'testusernametestusernametestusernam') == True
-    assert inputValidator.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu;') == False
-    assert inputValidator.verifyInputLength('PASSWORD', 'usrnmdd') == False
-    assert inputValidator.verifyInputLength('PASSWORD', '') == False
-    assert inputValidator.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestu') == True
-    assert inputValidator.verifyInputLength('PASSWORD', 'testusernametestusernametestusernametestusernametestusernametestusername') == False
-
-def test_handleEmptyInputFields():
     user = getUser('', '')
-    assert inputValidator.handleEmptyInputFields(user) == 'EMPTY_FIELDS'
+    assert inputValidator.checkInputEmpty(user) == "username empty"
     del user
 
     user = getUser('', 'password')
-    assert inputValidator.handleEmptyInputFields(user) == 'EMPTY_USERNAME'
+    assert inputValidator.checkInputEmpty(user) == 'username empty'
     del user
 
     user = getUser('username', '')
-    assert inputValidator.handleEmptyInputFields(user) == 'EMPTY_PASSWORD'
+    assert inputValidator.checkInputEmpty(user) == 'password empty'
     del user
 
     user = getUser('username', 'password')
-    assert inputValidator.handleEmptyInputFields(user) == 'ALL_FIELDS_FILLED'
+    assert inputValidator.checkInputEmpty(user) == 'username & password not empty'
     del user
 
-def test_handleInputLengthChecks():
+def test_checkInputLength():
     user = getUser('NewUser123', 'testusername')
-    assert inputValidator.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputValidator.checkInputLength(user) == 'username & password length ok'
     del user
 
     user = getUser('usrnmm', 'testusernametestusernametestusernam')
-    assert inputValidator.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputValidator.checkInputLength(user) == 'username & password length ok'
     del user
 
     user = getUser('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    assert inputValidator.checkInputLength(user) == "username length bad"
     del user
 
     user = getUser('', 'usrnmdd')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    assert inputValidator.checkInputLength(user) == "username length bad"
     del user
 
     user = getUser('User', '')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    assert inputValidator.checkInputLength(user) == "username length bad"
     del user
 
     user = getUser(',', 'testusernametestusernametestusernametestusernametestusernametestusername')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_USERNAME_LENGTH'
+    assert inputValidator.checkInputLength(user) == "username length bad"
     del user
 
     user = getUser('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestu')
-    assert inputValidator.handleInputLengthChecks(user) == 'GOOD_USERNAME_&_PASSWORD_LENGTH'
+    assert inputValidator.checkInputLength(user) == 'username & password length ok'
     del user
 
     user = getUser('usrnmm', 'testusernametestusernametestusernametestusernametestusernametestus')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_PASSWORD_LENGTH'
+    assert inputValidator.checkInputLength(user) == "password length bad"
     del user
 
     user = getUser('usrnmm', 'passwor')
-    assert inputValidator.handleInputLengthChecks(user) == 'INVALID_PASSWORD_LENGTH'
+    assert inputValidator.checkInputLength(user) == "password length bad"
     del user
 
-def test_verifyUsernameChars():
+def test_isUsernameCharsOk():
     user = getUser('string2', 'password123')
-    assert inputValidator.verifyUsernameChars(user) == True
+    assert inputValidator.isUsernameCharsOk(user) == True
     del user
 
     user = getUser('fake$username)', 'password123')
-    assert inputValidator.verifyUsernameChars(user) == False
+    assert inputValidator.isUsernameCharsOk(user) == False
     del user
 
     user = getUser(')(*&^)', 'password123')
-    assert inputValidator.verifyUsernameChars(user) == False
+    assert inputValidator.isUsernameCharsOk(user) == False
     del user
 
     user = getUser(')(*&^)textTest*&^%moretestis*fun;:', 'password123')
-    assert inputValidator.verifyUsernameChars(user) == False
+    assert inputValidator.isUsernameCharsOk(user) == False
     del user
 
-def test_verifyPassword():
+def test_isPasswordCorrect():
     DBA.createConnection()
 
     user1 = getUser('username1', 'password1')
     DBA.insertUserInfo(user1)
     user2 = getUser('username1', 'password1')
     selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
-    isPasswordCorrect = inputValidator.verifyPassword(user2, selectedHashedPassword)
+    isPasswordCorrect = inputValidator.isPasswordCorrect(user2, selectedHashedPassword)
     assert isPasswordCorrect == True
 
     del user1
@@ -137,7 +113,7 @@ def test_verifyPassword():
     DBA.insertUserInfo(user1)
     user2 = getUser('username2', 'password1')
     selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
-    isPasswordCorrect = inputValidator.verifyPassword(user2, selectedHashedPassword)
+    isPasswordCorrect = inputValidator.isPasswordCorrect(user2, selectedHashedPassword)
     assert isPasswordCorrect == False
 
     del user1
@@ -148,7 +124,7 @@ def test_verifyPassword():
     DBA.insertUserInfo(user1)
     user2 = getUser('username3', '^&*()()')
     selectedHashedPassword = DBA.selectHashedPassword(user2).encode('utf-8')
-    isPasswordCorrect = inputValidator.verifyPassword(user2, selectedHashedPassword)
+    isPasswordCorrect = inputValidator.isPasswordCorrect(user2, selectedHashedPassword)
     assert isPasswordCorrect == True
 
     del user1

@@ -5,6 +5,9 @@ sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBas
 from SignUpHandler import SignUpHandler
 from DatabaseAccessor import DatabaseAccessor
 
+RESPONSE_STRING = 0
+RESPONSE_CODE   = 1
+
 signUpHandler = SignUpHandler()
 DBA = DatabaseAccessor()
 
@@ -19,52 +22,131 @@ def test_handleUserSignUp():
     DBA.clearDatabase()
 
     # empty field(s) tests
-    assert signUpHandler.handleUserSignUp('', '') == 'EMPTY_FIELDS'
-    assert signUpHandler.handleUserSignUp(None, None) == 'EMPTY_FIELDS'
-    assert signUpHandler.handleUserSignUp('', 'password') == 'EMPTY_USERNAME'
-    assert signUpHandler.handleUserSignUp(None, 'password') == 'EMPTY_USERNAME'
-    assert signUpHandler.handleUserSignUp('username', '') == 'EMPTY_PASSWORD'
-    assert signUpHandler.handleUserSignUp('username', None) == 'EMPTY_PASSWORD'
+    resultPackage = signUpHandler.handleUserSignUp('', '')
+    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp(None, None)
+    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp(None, 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('username', '')
+    assert resultPackage[RESPONSE_STRING] == 'password empty'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('username', None)
+    assert resultPackage[RESPONSE_STRING] == 'password null'
+    assert resultPackage[RESPONSE_CODE] == 400
 
     # success tests
-    assert signUpHandler.handleUserSignUp('username1', 'password') == 'SUCCESS'
-    assert signUpHandler.handleUserSignUp('username2', '        ') == 'SUCCESS'
-    assert signUpHandler.handleUserSignUp('username3', '    )(*)    ') == 'SUCCESS'
+    resultPackage = signUpHandler.handleUserSignUp('username1', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'signup successful'
+    assert resultPackage[RESPONSE_CODE] == 201
+
+    resultPackage = signUpHandler.handleUserSignUp('username2', '        ')
+    assert resultPackage[RESPONSE_STRING] == 'signup successful'
+    assert resultPackage[RESPONSE_CODE] == 201
+
+    resultPackage = signUpHandler.handleUserSignUp('username3', '    )(*)    ')
+    assert resultPackage[RESPONSE_STRING] == 'signup successful'
+    assert resultPackage[RESPONSE_CODE] == 201
 
     DBA.clearDatabase()
 
     # invalid username characters tests
-    assert signUpHandler.handleUserSignUp('usern>ame', 'password') == 'INVALID_USERNAME_CHARS'
-    assert signUpHandler.handleUserSignUp('-username', 'password') == 'INVALID_USERNAME_CHARS'
-    assert signUpHandler.handleUserSignUp('username;', 'password') == 'INVALID_USERNAME_CHARS'
-    assert signUpHandler.handleUserSignUp('{}{}{}{}{}', 'password') == 'INVALID_USERNAME_CHARS'
+
+    resultPackage = signUpHandler.handleUserSignUp('usern>ame', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('-username', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('username;', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('{}{}{}{}{}', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
+    assert resultPackage[RESPONSE_CODE] == 400
 
     # duplicate username tests
     signUpHandler.handleUserSignUp('username', 'password1')
-    assert signUpHandler.handleUserSignUp('username', 'password1') == 'DUPLICATE_USERNAME'
+    resultPackage = signUpHandler.handleUserSignUp('username', 'password1')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     DBA.clearDatabase()
+
     signUpHandler.handleUserSignUp('Username', 'password')
-    assert signUpHandler.handleUserSignUp('username', 'password') == 'DUPLICATE_USERNAME'
+    resultPackage = signUpHandler.handleUserSignUp('Username', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('username', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     DBA.clearDatabase()
+
     signUpHandler.handleUserSignUp('username', 'password')
-    assert signUpHandler.handleUserSignUp('Username', 'password') == 'DUPLICATE_USERNAME'
+    resultPackage = signUpHandler.handleUserSignUp('Username', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     DBA.clearDatabase()
+
     signUpHandler.handleUserSignUp('UsErNAME', 'password')
-    assert signUpHandler.handleUserSignUp('USERNAME', 'password') == 'DUPLICATE_USERNAME'
+    resultPackage = signUpHandler.handleUserSignUp('USERNAME', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
+
     DBA.clearDatabase()
+
     signUpHandler.handleUserSignUp('USERNAME', 'password')
-    assert signUpHandler.handleUserSignUp('username', 'password') == 'DUPLICATE_USERNAME'
+    resultPackage = signUpHandler.handleUserSignUp('username', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'username already exists'
+    assert resultPackage[RESPONSE_CODE] == 400
 
     DBA.clearDatabase()
 
     # characters out of range in username or password tests
-    assert signUpHandler.handleUserSignUp('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;') == 'INVALID_USERNAME_LENGTH'
-    assert signUpHandler.handleUserSignUp(',', 'testusernametestusernametestusernametestusernametestusernametestusername') == 'INVALID_USERNAME_LENGTH'
-    assert signUpHandler.handleUserSignUp('User', '   ') == 'INVALID_USERNAME_LENGTH'
-    assert signUpHandler.handleUserSignUp('Username1', 'testusernametestusernametestusernametestusernametestusernametestu;') == 'INVALID_PASSWORD_LENGTH'
-    assert signUpHandler.handleUserSignUp('Username1', '*') == 'INVALID_PASSWORD_LENGTH'
-    assert signUpHandler.handleUserSignUp('Username2', ' ') == 'INVALID_PASSWORD_LENGTH'
-    assert signUpHandler.handleUserSignUp('GoodUsername', 'GoodPassword123') == 'SUCCESS'
+    resultPackage = signUpHandler.handleUserSignUp('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;')
+    assert resultPackage[RESPONSE_STRING] == "username length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp(',', 'testusernametestusernametestusernametestusernametestusernametestusername')
+    assert resultPackage[RESPONSE_STRING] == "username length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('User', '   ')
+    assert resultPackage[RESPONSE_STRING] == "username length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('Username1', 'testusernametestusernametestusernametestusernametestusernametestu;')
+    assert resultPackage[RESPONSE_STRING] == "password length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('Username1', '*')
+    assert resultPackage[RESPONSE_STRING] == "password length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('Username2', ' ')
+    assert resultPackage[RESPONSE_STRING] == "password length bad"
+    assert resultPackage[RESPONSE_CODE] == 400
+
+    resultPackage = signUpHandler.handleUserSignUp('GoodUsername', 'GoodPassword123')
+    assert resultPackage[RESPONSE_STRING] == 'signup successful'
+    assert resultPackage[RESPONSE_CODE] == 201
 
     DBA.clearDatabase()
     DBA.closeConnection()
