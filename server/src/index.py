@@ -20,7 +20,8 @@ def signUpSubmit():
         password = request.form['password']
 
         resultPackage = signUpHandler.handleUserSignUp(username, password)
-        print(resultPackage[0])
+        print("Response String: ", resultPackage[RESPONSE_STRING])
+        print("Response Code: ", resultPackage[RESPONSE_CODE])
         return resultPackage[RESPONSE_STRING], resultPackage[RESPONSE_CODE]
 
 @app.route("/loginSubmit",  methods=['POST'])
@@ -32,7 +33,7 @@ def loginSubmit():
         username = request.form['username']
         password = request.form['password']
 
-        # list of token and result code is returned if successful
         resultPackage = loginHandler.handleUserLogin(username, password)
-        print(resultPackage[0])
+        print("Response String: ", resultPackage[RESPONSE_STRING])
+        print("Response Code: ", resultPackage[RESPONSE_CODE])
         return resultPackage[RESPONSE_STRING], resultPackage[RESPONSE_CODE]

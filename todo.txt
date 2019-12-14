@@ -1,8 +1,5 @@
 # Todo:
 
-	- Clean up api to follow diagram
-	- Test using Insomnia
-	- Create Page Serving Front End with Node (only routes to pages!)
         - Have front end javascript check for existing tokens & redirect if so,
 	  update html bars based on response codes, and set token response and redirect
           to next service
