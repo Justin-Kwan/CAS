@@ -11,8 +11,8 @@ RESPONSE_CODE   = 1
 signUpHandler = SignUpHandler()
 DBA = DatabaseAccessor()
 
-def getUser(username, password):
-    user = User(username, password)
+def getUser(email, password):
+    user = User(email, password)
     user.encryptAndSetPassword(password)
     user.generateAndUpdateUserId()
     return user
@@ -23,128 +23,159 @@ def test_handleUserSignUp():
 
     # empty field(s) tests
     resultPackage = signUpHandler.handleUserSignUp('', '')
-    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_STRING] == 'email empty'
     assert resultPackage[RESPONSE_CODE] == 400
 
     resultPackage = signUpHandler.handleUserSignUp(None, None)
-    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_STRING] == 'email null'
     assert resultPackage[RESPONSE_CODE] == 400
 
     resultPackage = signUpHandler.handleUserSignUp('', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username empty'
+    assert resultPackage[RESPONSE_STRING] == 'email empty'
     assert resultPackage[RESPONSE_CODE] == 400
 
     resultPackage = signUpHandler.handleUserSignUp(None, 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username null'
+    assert resultPackage[RESPONSE_STRING] == 'email null'
     assert resultPackage[RESPONSE_CODE] == 400
 
-    resultPackage = signUpHandler.handleUserSignUp('username', '')
+    resultPackage = signUpHandler.handleUserSignUp('email', '')
     assert resultPackage[RESPONSE_STRING] == 'password empty'
     assert resultPackage[RESPONSE_CODE] == 400
 
-    resultPackage = signUpHandler.handleUserSignUp('username', None)
+    resultPackage = signUpHandler.handleUserSignUp('email', None)
     assert resultPackage[RESPONSE_STRING] == 'password null'
     assert resultPackage[RESPONSE_CODE] == 400
 
     # success tests
-    resultPackage = signUpHandler.handleUserSignUp('username1', 'password')
+    resultPackage = signUpHandler.handleUserSignUp('a@aol.c', '        ')
     assert resultPackage[RESPONSE_STRING] == 'signup successful'
     assert resultPackage[RESPONSE_CODE] == 201
 
-    resultPackage = signUpHandler.handleUserSignUp('username2', '        ')
+    resultPackage = signUpHandler.handleUserSignUp('email3@m.c', '    )(*)    ')
     assert resultPackage[RESPONSE_STRING] == 'signup successful'
     assert resultPackage[RESPONSE_CODE] == 201
 
-    resultPackage = signUpHandler.handleUserSignUp('username3', '    )(*)    ')
+    resultPackage = signUpHandler.handleUserSignUp('e@mai.c', '    )(*)    ')
     assert resultPackage[RESPONSE_STRING] == 'signup successful'
     assert resultPackage[RESPONSE_CODE] == 201
 
     DBA.clearDatabase()
 
-    # invalid username characters tests
-
+    # invalid email characters tests
     resultPackage = signUpHandler.handleUserSignUp('usern>ame', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
-    assert resultPackage[RESPONSE_CODE] == 400
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
 
-    resultPackage = signUpHandler.handleUserSignUp('-username', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
-    assert resultPackage[RESPONSE_CODE] == 400
+    resultPackage = signUpHandler.handleUserSignUp('-email', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
 
-    resultPackage = signUpHandler.handleUserSignUp('username;', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
-    assert resultPackage[RESPONSE_CODE] == 400
+    resultPackage = signUpHandler.handleUserSignUp('email;', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
 
     resultPackage = signUpHandler.handleUserSignUp('{}{}{}{}{}', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username characters bad'
-    assert resultPackage[RESPONSE_CODE] == 400
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
 
-    # duplicate username tests
-    signUpHandler.handleUserSignUp('username', 'password1')
-    resultPackage = signUpHandler.handleUserSignUp('username', 'password1')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
+    resultPackage = signUpHandler.handleUserSignUp('email1', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
+
+    resultPackage = signUpHandler.handleUserSignUp('@', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
+
+    resultPackage = signUpHandler.handleUserSignUp('@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    resultPackage = signUpHandler.handleUserSignUp('gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    resultPackage = signUpHandler.handleUserSignUp('robert.@', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    resultPackage = signUpHandler.handleUserSignUp('robert@', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    resultPackage = signUpHandler.handleUserSignUp('robert@gmail.', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    resultPackage = signUpHandler.handleUserSignUp('(*&)@gmail.', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email invalid'
+    assert resultPackage[RESPONSE_CODE] == 403
+
+    # duplicate email tests
+    signUpHandler.handleUserSignUp('email@aol.com', 'password1')
+    resultPackage = signUpHandler.handleUserSignUp('email@aol.com', 'password1')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
     DBA.clearDatabase()
 
-    signUpHandler.handleUserSignUp('Username', 'password')
-    resultPackage = signUpHandler.handleUserSignUp('Username', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
+    signUpHandler.handleUserSignUp('Email@gmail.com', 'password')
+    resultPackage = signUpHandler.handleUserSignUp('Email@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
-    resultPackage = signUpHandler.handleUserSignUp('username', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
-
-    DBA.clearDatabase()
-
-    signUpHandler.handleUserSignUp('username', 'password')
-    resultPackage = signUpHandler.handleUserSignUp('Username', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
+    resultPackage = signUpHandler.handleUserSignUp('email@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
     DBA.clearDatabase()
 
-    signUpHandler.handleUserSignUp('UsErNAME', 'password')
-    resultPackage = signUpHandler.handleUserSignUp('USERNAME', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
+    signUpHandler.handleUserSignUp('email@gmail.com', 'password')
+    resultPackage = signUpHandler.handleUserSignUp('Email@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
     DBA.clearDatabase()
 
-    signUpHandler.handleUserSignUp('USERNAME', 'password')
-    resultPackage = signUpHandler.handleUserSignUp('username', 'password')
-    assert resultPackage[RESPONSE_STRING] == 'username already exists'
-    assert resultPackage[RESPONSE_CODE] == 400
+    signUpHandler.handleUserSignUp('UsErNAME@gmail.com', 'password')
+    resultPackage = signUpHandler.handleUserSignUp('USERNAME@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
     DBA.clearDatabase()
 
-    # characters out of range in username or password tests
-    resultPackage = signUpHandler.handleUserSignUp('testusernametestusernametestusername', 'testusernametestusernametestusernametestusernametestusernametestu;')
-    assert resultPackage[RESPONSE_STRING] == "username length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    signUpHandler.handleUserSignUp('USERNAME@gmail.com', 'password')
+    resultPackage = signUpHandler.handleUserSignUp('username@gmail.com', 'password')
+    assert resultPackage[RESPONSE_STRING] == 'email already exists'
+    assert resultPackage[RESPONSE_CODE] == 404
 
-    resultPackage = signUpHandler.handleUserSignUp(',', 'testusernametestusernametestusernametestusernametestusernametestusername')
-    assert resultPackage[RESPONSE_STRING] == "username length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    DBA.clearDatabase()
 
-    resultPackage = signUpHandler.handleUserSignUp('User', '   ')
-    assert resultPackage[RESPONSE_STRING] == "username length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    # characters out of range in email or password tests
+    resultPackage = signUpHandler.handleUserSignUp('testemailtestemailtestemaffdddddddddddddddddddddddasdawdawdwadwddawdawdaffffil@outlook.com', 'testemailtestemailtestemailtestemailtestemailtestu;')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
 
-    resultPackage = signUpHandler.handleUserSignUp('Username1', 'testusernametestusernametestusernametestusernametestusernametestu;')
+    resultPackage = signUpHandler.handleUserSignUp(',', 'testemailtestemailtestemailtestemailtestemailtestemail')
+    assert resultPackage[RESPONSE_STRING] == 'email length bad'
+    assert resultPackage[RESPONSE_CODE] == 402
+
+    resultPackage = signUpHandler.handleUserSignUp('User@aol.com', '   ')
     assert resultPackage[RESPONSE_STRING] == "password length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    assert resultPackage[RESPONSE_CODE] == 402
 
-    resultPackage = signUpHandler.handleUserSignUp('Username1', '*')
+    resultPackage = signUpHandler.handleUserSignUp('Email1@aol.com', 'testemailtestemailtestemailtestemailtestemailtestu;ddddddddddddddd')
     assert resultPackage[RESPONSE_STRING] == "password length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    assert resultPackage[RESPONSE_CODE] == 402
 
-    resultPackage = signUpHandler.handleUserSignUp('Username2', ' ')
+    resultPackage = signUpHandler.handleUserSignUp('Email1@aol.com', '*')
     assert resultPackage[RESPONSE_STRING] == "password length bad"
-    assert resultPackage[RESPONSE_CODE] == 400
+    assert resultPackage[RESPONSE_CODE] == 402
 
-    resultPackage = signUpHandler.handleUserSignUp('GoodUsername', 'GoodPassword123')
+    resultPackage = signUpHandler.handleUserSignUp('Email2@aol.com', ' ')
+    assert resultPackage[RESPONSE_STRING] == "password length bad"
+    assert resultPackage[RESPONSE_CODE] == 402
+
+    resultPackage = signUpHandler.handleUserSignUp('GoodEmail@aol.com', 'GoodPassword123')
     assert resultPackage[RESPONSE_STRING] == 'signup successful'
     assert resultPackage[RESPONSE_CODE] == 201
 
@@ -153,8 +184,8 @@ def test_handleUserSignUp():
 
 def test_getUser():
     DBA.createConnection()
-    user = signUpHandler.getUser('username1', 'password1')
-    assert user.getUsername() == 'username1'
+    user = signUpHandler.getUser('email1@aol.com', 'password1')
+    assert user.getEmail() == 'email1@aol.com'
     assert user.getTextPassword() == 'password1'
     assert user.getHashedPassword() != None
     assert user.getUserId() != None

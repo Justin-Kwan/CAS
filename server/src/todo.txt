@@ -4,7 +4,5 @@
 
   - double password confirmation?
 
-  - clean up JS files in login and signup pages
-
 
   - Need Google Captcha

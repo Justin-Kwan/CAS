@@ -15,35 +15,35 @@ class DatabaseAccessor():
         )
         self.cursor = self.connection.cursor()
 
-    def selectUsername(self, user):
-        username = user.getUsername()
-        self.cursor.execute("SELECT Username from Users WHERE Username = %s", (username,))
-        selectedUsername = self.cursor.fetchone()
-        return self.handleQueryReturn(selectedUsername)
+    def selectEmail(self, user):
+        email = user.getEmail()
+        self.cursor.execute("SELECT Email from Users WHERE Email = %s", (email,))
+        selectedEmail = self.cursor.fetchone()
+        return self.handleQueryReturn(selectedEmail)
 
     def selectHashedPassword(self, user):
-        username = user.getUsername()
-        self.cursor.execute("SELECT HashedPass from Users WHERE Username = %s", (username,))
+        email = user.getEmail()
+        self.cursor.execute("SELECT HashedPass from Users WHERE Email = %s", (email,))
         selectedHashedPassword = self.cursor.fetchone()
         return self.handleQueryReturn(selectedHashedPassword)
 
     def selectUserId(self, user):
-        username = user.getUsername()
-        self.cursor.execute("SELECT UserId from Users WHERE Username = %s", (username,))
+        email = user.getEmail()
+        self.cursor.execute("SELECT UserId from Users WHERE Email = %s", (email,))
         selectedUserId = self.cursor.fetchone()
         return self.handleQueryReturn(selectedUserId)
 
     def insertUserInfo(self, user):
-        username = user.getUsername()
+        email = user.getEmail()
         hashedPassword = user.getHashedPassword()
         userId = user.getUserId()
-        self.cursor.execute("INSERT INTO Users(Username, HashedPass, UserId) VALUES(%s, %s, %s)", (username, hashedPassword, userId))
+        self.cursor.execute("INSERT INTO Users(Email, HashedPass, UserId) VALUES(%s, %s, %s)", (email, hashedPassword, userId))
         self.connection.commit()
 
-    def checkForExistingUsername(self, user):
-        selectedUsername = self.selectUsername(user)
-        doesUsernameExist = selectedUsername == user.getUsername()
-        return doesUsernameExist
+    def checkForExistingEmail(self, user):
+        selectedEmail = self.selectEmail(user)
+        doesEmailExist = selectedEmail == user.getEmail()
+        return doesEmailExist
 
     def clearDatabase(self):
         self.cursor.execute('DELETE FROM Users')

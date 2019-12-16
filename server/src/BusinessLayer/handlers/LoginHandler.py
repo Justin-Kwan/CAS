@@ -15,28 +15,28 @@ DBA            = DatabaseAccessor()
 #   202 - Accpeted Login
 class LoginHandler():
 
-    def handleUserLogin(self, username, password):
+    def handleUserLogin(self, email, password):
 
-        resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != "username & password not null":
+        resultOfNullFieldCheck = inputValidator.checkInputNull(email, password)
+        if resultOfNullFieldCheck != "email & password not null":
             return (resultOfNullFieldCheck, 400)
 
-        user = self.getUser(str(username.lower()), str(password))
+        user = User(str(email.lower()), str(password))
 
         resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
-        if resultOfEmptyFieldCheck != "username & password not empty":
+        if resultOfEmptyFieldCheck != "email & password not empty":
             return (resultOfEmptyFieldCheck, 400)
 
         DBA.createConnection()
 
-        doesUsernameExist = DBA.checkForExistingUsername(user)
-        if not doesUsernameExist:
-            return ("username or password bad", 401)
+        doesEmailExist = DBA.checkForExistingEmail(user)
+        if not doesEmailExist:
+            return ("email or password wrong", 401)
 
         selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
         isPasswordCorrect = inputValidator.isPasswordCorrect(user, selectedHashedPassword)
         if not isPasswordCorrect:
-            return ("username or password bad", 401)
+            return ("email or password wrong", 401)
 
         userId = DBA.selectUserId(user)
         DBA.closeConnection()
@@ -46,7 +46,3 @@ class LoginHandler():
         authToken = user.getAuthToken()
 
         return (authToken, 202)
-
-    def getUser(self, username, password):
-        user = User(username, password)
-        return user

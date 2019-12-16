@@ -1,44 +1,46 @@
 import sys
 sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src')
 import bcrypt
+from validate_email import validate_email
 
 class InputValidator():
 
-    def checkInputNull(self, username, password):
-        if username is None:
-            return "username null"
+    def checkInputNull(self, email, password):
+        if email is None:
+            return "email null"
         if password is None:
             return "password null"
-        return "username & password not null"
+        return "email & password not null"
 
     def checkInputEmpty(self, user):
-        username = user.getUsername()
+        email = user.getEmail()
         password = user.getTextPassword()
 
-        if len(username) == 0:
-            return "username empty"
+        if len(email) == 0:
+            return "email empty"
         elif len(password) == 0:
             return "password empty"
-        return "username & password not empty"
+        return "email & password not empty"
 
     def checkInputLength(self, user):
-        username = user.getUsername()
+        email = user.getEmail()
         password = user.getTextPassword()
 
-        isUsernameLengthOk = len(username) >= 6 and len(username) <= 35
+        isEmailLengthOk = len(email) >= 7 and len(email) <= 89
         isPasswordLengthOk = len(password) >= 8 and len(password) <= 65
 
-        if not isUsernameLengthOk:
-            return "username length bad"
+        if not isEmailLengthOk:
+            return "email length bad"
         if not isPasswordLengthOk:
             return "password length bad"
-        return "username & password length ok"
+        return "email & password length ok"
 
-    def isUsernameCharsOk(self, user):
-        username = user.getUsername()
-        isUsernameCharsOk = username.isalnum()
+    def isEmailCharsOk(self, user):
+        email = user.getEmail()
+        isEmailCharsOk = validate_email(email)
 
-        return isUsernameCharsOk
+        return isEmailCharsOk
+
 
     def isPasswordCorrect(self, user, selectedHashedPassword):
         password = user.getTextPassword().encode('utf-8')

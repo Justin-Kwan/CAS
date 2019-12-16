@@ -15,38 +15,38 @@ DBA            = DatabaseAccessor()
 #   201 - Created Signup
 class SignUpHandler():
 
-    def handleUserSignUp(self, username, password):
+    def handleUserSignUp(self, email, password):
 
-        resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != "username & password not null":
+        resultOfNullFieldCheck = inputValidator.checkInputNull(email, password)
+        if resultOfNullFieldCheck != "email & password not null":
             return (resultOfNullFieldCheck, 400)
 
-        user = self.getUser(str(username.lower()), str(password))
+        user = self.getUser(str(email.lower()), str(password))
 
         resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
-        if resultOfEmptyFieldCheck != "username & password not empty":
+        if resultOfEmptyFieldCheck != "email & password not empty":
             return (resultOfEmptyFieldCheck, 400)
 
         resultOfInputLengthCheck = inputValidator.checkInputLength(user)
-        if resultOfInputLengthCheck != "username & password length ok":
-            return (resultOfInputLengthCheck, 400)
+        if resultOfInputLengthCheck != "email & password length ok":
+            return (resultOfInputLengthCheck, 402)
 
-        isUsernameCharsOk = inputValidator.isUsernameCharsOk(user)
-        if not isUsernameCharsOk:
-            return ("username characters bad", 400)
+        isEmailCharsOk = inputValidator.isEmailCharsOk(user)
+        if not isEmailCharsOk:
+            return ("email invalid", 403)
 
         DBA.createConnection()
 
-        doesUsernameExist = DBA.checkForExistingUsername(user)
-        if doesUsernameExist:
-            return ("username already exists", 400)
+        doesEmailExist = DBA.checkForExistingEmail(user)
+        if doesEmailExist:
+            return ("email already exists", 404)
 
         DBA.insertUserInfo(user)
         DBA.closeConnection()
         return ("signup successful", 201)
 
-    def getUser(self, username, password):
-        user = User(username, password)
+    def getUser(self, email, password):
+        user = User(email, password)
         user.encryptAndSetPassword(password)
         user.generateAndSetUserId()
         return user

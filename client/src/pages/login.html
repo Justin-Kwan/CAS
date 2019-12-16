@@ -78,7 +78,7 @@
                 </div>
             </form>
 
-            <button type="submit" id="submit_button" class="btn btn-primary">Login</button>
+            <button type="submit" id="login_submit_button" class="btn btn-primary">Login</button>
 
         </div>
 
@@ -87,36 +87,7 @@
 
 </body>
 
-
-
-<script>
-
-  const HTML_BAR = 0;
-  const RESULT_CODE = 1;
-
-  $(document).ready(function() {
-
-    $('#submit_button').click(function() {
-      console.log("CLICKED!");
-      $("#login_form").submit();
-    });
-
-    $("#login_form").submit(function(event) {
-
-      event.preventDefault(); //prevent default action
-      let postUrl = 'http://127.0.0.1:5000/loginSubmit'
-      let formData = $(this).serialize(); //Encode form elements for submission
-
-      $.post(postUrl, formData, function(userAuthServerResponse) {
-        console.log('SERVER RESPONSE: ' + userAuthServerResponse);
-        $('#login_result_bar').replaceWith(userAuthServerResponse[HTML_BAR]);
-      });
-
-    });
-
-  });
-
-</script>
+<script src="./core.js"></script>
 
 <style>
     .img {

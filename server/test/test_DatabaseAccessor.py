@@ -11,23 +11,23 @@ from User             import User
 inputValidator = InputValidator()
 DBA = DatabaseAccessor()
 
-def getUser(username, password, userId):
-    user = User(username, password)
+def getUser(email, password, userId):
+    user = User(email, password)
     user.encryptAndSetPassword(password)
     user.setUserId(userId)
     return user
 
-# test username, password and user id inserting function
+# test email, password and user id inserting function
 def test_insertUserInfo():
     DBA.createConnection()
     DBA.clearDatabase()
 
-    user = getUser('testUsername1', 'testPassword1', 'testId1')
+    user = getUser('testEmail1', 'testPassword1', 'testId1')
     DBA.insertUserInfo(user)
-    selectedUsername = DBA.selectUsername(user)
+    selectedEmail = DBA.selectEmail(user)
     selectedHashedPassword = DBA.selectHashedPassword(user)
     selectedUserId = DBA.selectUserId(user)
-    assert selectedUsername == 'testUsername1'
+    assert selectedEmail == 'testEmail1'
     assert selectedHashedPassword != None
     assert selectedUserId == 'testId1'
 
@@ -36,10 +36,10 @@ def test_insertUserInfo():
 
     user = getUser('09812', '*7%-', 'testId2')
     DBA.insertUserInfo(user)
-    selectedUsername = DBA.selectUsername(user)
+    selectedEmail = DBA.selectEmail(user)
     selectedHashedPassword = DBA.selectHashedPassword(user)
     selectedUserId = DBA.selectUserId(user)
-    assert selectedUsername == '09812'
+    assert selectedEmail == '09812'
     assert selectedHashedPassword != None
     assert selectedUserId == 'testId2'
 
@@ -48,10 +48,10 @@ def test_insertUserInfo():
 
     user = getUser('-l-&$', '=testpassw0rd', 'testId3')
     DBA.insertUserInfo(user)
-    selectedUsername = DBA.selectUsername(user)
+    selectedEmail = DBA.selectEmail(user)
     selectedHashedPassword = DBA.selectHashedPassword(user)
     selectedUserId = DBA.selectUserId(user)
-    assert selectedUsername == '-l-&$'
+    assert selectedEmail == '-l-&$'
     assert selectedHashedPassword != None
     assert selectedUserId == 'testId3'
 
@@ -61,10 +61,10 @@ def test_insertUserInfo():
     user = getUser('fake-user', 'password123', '')
     user.generateAndSetUserId()
     DBA.insertUserInfo(user)
-    selectedUsername = DBA.selectUsername(user)
+    selectedEmail = DBA.selectEmail(user)
     selectedHashedPassword = DBA.selectHashedPassword(user)
     selectedUserId = DBA.selectUserId(user)
-    assert selectedUsername == 'fake-user'
+    assert selectedEmail == 'fake-user'
     assert selectedHashedPassword != None
     assert selectedUserId == user.getUserId()
 
@@ -72,19 +72,19 @@ def test_insertUserInfo():
     DBA.clearDatabase()
     DBA.closeConnection()
 
-# test username selecting function
-def test_selectUsername():
+# test email selecting function
+def test_selectEmail():
     DBA.createConnection()
     DBA.clearDatabase()
 
-    user1 = getUser('testUsername1', 'testPassword1', 'testId')
-    user2 = getUser('testUsername2', 'testPassword2', 'testId')
-    user3 = getUser('testUsername3', 'testPassword3', 'testId')
+    user1 = getUser('testEmail1', 'testPassword1', 'testId')
+    user2 = getUser('testEmail2', 'testPassword2', 'testId')
+    user3 = getUser('testEmail3', 'testPassword3', 'testId')
     DBA.insertUserInfo(user1)
     DBA.insertUserInfo(user2)
     DBA.insertUserInfo(user3)
-    selectedUsername = DBA.selectUsername(user2)
-    assert selectedUsername == 'testUsername2'
+    selectedEmail = DBA.selectEmail(user2)
+    assert selectedEmail == 'testEmail2'
 
     del user1
     del user2
@@ -92,13 +92,13 @@ def test_selectUsername():
     DBA.clearDatabase()
 
     user1 = getUser('fakename', 'teddddstPassword1', 'testId')
-    user2 = getUser('testdwdadUsername2', 'testPawddassword2', 'testId')
+    user2 = getUser('testdwdadEmail2', 'testPawddassword2', 'testId')
     user3 = getUser('w90', 'test', 'testId')
     DBA.insertUserInfo(user1)
     DBA.insertUserInfo(user2)
     DBA.insertUserInfo(user3)
-    selectedUsername = DBA.selectUsername(user3)
-    assert selectedUsername == 'w90'
+    selectedEmail = DBA.selectEmail(user3)
+    assert selectedEmail == 'w90'
 
     del user1
     del user2
@@ -174,7 +174,7 @@ def test_selectUserId():
     DBA.clearDatabase()
     DBA.closeConnection()
 
-def test_checkForExistingUsername():
+def test_checkForExistingEmail():
     DBA.createConnection()
     DBA.clearDatabase()
 
@@ -185,8 +185,8 @@ def test_checkForExistingUsername():
     DBA.insertUserInfo(user1)
     DBA.insertUserInfo(user2)
     DBA.insertUserInfo(user3)
-    doesUsernameExist = DBA.checkForExistingUsername(user4)
-    assert doesUsernameExist == True
+    doesEmailExist = DBA.checkForExistingEmail(user4)
+    assert doesEmailExist == True
 
     del user1
     del user2
@@ -201,8 +201,8 @@ def test_checkForExistingUsername():
     DBA.insertUserInfo(user1)
     DBA.insertUserInfo(user2)
     DBA.insertUserInfo(user3)
-    doesUsernameExist = DBA.checkForExistingUsername(user4)
-    assert doesUsernameExist == True
+    doesEmailExist = DBA.checkForExistingEmail(user4)
+    assert doesEmailExist == True
 
     del user1
     del user2
@@ -217,8 +217,8 @@ def test_checkForExistingUsername():
     DBA.insertUserInfo(user1)
     DBA.insertUserInfo(user2)
     DBA.insertUserInfo(user3)
-    doesUsernameExist = DBA.checkForExistingUsername(user4)
-    assert doesUsernameExist == False
+    doesEmailExist = DBA.checkForExistingEmail(user4)
+    assert doesEmailExist == False
 
     del user1
     del user2
