@@ -1,7 +1,11 @@
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
+import os
+
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(THIS_FOLDER + '/../src/DatabaseLayer')
+sys.path.append(THIS_FOLDER + '/../src/BusinessLayer')
+sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/models')
+
 from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor
 from User             import User
@@ -15,38 +19,40 @@ DBA            = DatabaseAccessor()
 #   202 - Accpeted Login
 class LoginHandler():
 
-    def handleUserLogin(self, username, password):
+    def getJsonResponse(self, responseString, responseCode):
+        return {
+            'response string': responseString,
+            'response code': responseCode
+        }
 
-        resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != "username & password not null":
-            return (resultOfNullFieldCheck, 400)
+    def handleUserLogin(self, email, password):
 
-        user = self.getUser(str(username.lower()), str(password))
+        resultOfNullFieldCheck = inputValidator.checkInputNull(email, password)
+        if resultOfNullFieldCheck != "email & password not null":
+            return self.getJsonResponse(resultOfNullFieldCheck, 400)
+
+        user = User(str(email.lower()), str(password))
 
         resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
-        if resultOfEmptyFieldCheck != "username & password not empty":
-            return (resultOfEmptyFieldCheck, 400)
+        if resultOfEmptyFieldCheck != "email & password not empty":
+            return self.getJsonResponse(resultOfEmptyFieldCheck, 400)
 
         DBA.createConnection()
 
-        doesUsernameExist = DBA.checkForExistingUsername(user)
-        if not doesUsernameExist:
-            return ("username or password bad", 401)
+        doesEmailExist = DBA.doesEmailExist(user)
+        if not doesEmailExist:
+            return self.getJsonResponse("email or password wrong", 401)
 
         selectedHashedPassword = DBA.selectHashedPassword(user).encode('utf-8')
         isPasswordCorrect = inputValidator.isPasswordCorrect(user, selectedHashedPassword)
         if not isPasswordCorrect:
-            return ("username or password bad", 401)
+            return self.getJsonResponse("email or password wrong", 401)
 
-        userId = DBA.selectUserId(user)
+        userId = DBA.selectUserIdFromEmail(user)
         DBA.closeConnection()
 
         user.setUserId(userId)
         user.generateAndSetAuthToken()
         authToken = user.getAuthToken()
 
-        return (authToken, 202)
-
-    def getUser(self, username, password):
-        user = User(username, password)
-        return user
+        return self.getJsonResponse(authToken, 202)

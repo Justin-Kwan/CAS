@@ -5,15 +5,15 @@ import datetime
 
 class User():
 
-    def __init__(self, username, textPassword):
-        self.username       = username
+    def __init__(self, email, textPassword):
+        self.email          = email
         self.textPassword   = textPassword
         self.hashedPassword = None
         self.userId         = None
         self.authToken      = None
 
-    def getUsername(self):
-        return self.username
+    def getEmail(self):
+        return self.email
 
     def getTextPassword(self):
         return self.textPassword
@@ -30,8 +30,11 @@ class User():
     def setUserId(self, userId):
         self.userId = userId
 
-    def encryptAndSetPassword(self, password):
-        hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    def setAuthToken(self, authToken):
+        self.authToken = authToken
+
+    def encryptAndSetPassword(self):
+        hashedPassword = bcrypt.hashpw(self.textPassword.encode('utf-8'), bcrypt.gensalt())
         # generated password is encoded so must decode before storing in db
         self.hashedPassword = hashedPassword.decode()
 
@@ -39,12 +42,12 @@ class User():
         self.userId = str(uuid.uuid4())
 
     def generateAndSetAuthToken(self):
-        username = self.getUsername()
+        email = self.getEmail()
         userId = self.getUserId()
         tokenExpiryTime = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
 
         authTokenPayload = {
-            'username': username,
+            'email': email,
             'user id': userId,
             'exp': tokenExpiryTime
         }

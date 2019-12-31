@@ -1,13 +1,4 @@
-# Todo:
-
-        - Have front end javascript check for existing tokens & redirect if so,
-	  update html bars based on response codes, and set token response and redirect
-          to next service
-
 
 # Todo for later:
 
-	- Make a user-auth server that gives and checks tokens only!
-	- rename current UserAuth service to user-management
-		- can delete user, reset password, etc
-	- user-management asks user-auth for token on login (giving userid for payload)
+	- can deactivate user, reset password, etc

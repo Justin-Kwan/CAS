@@ -1,7 +1,11 @@
 import pytest
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
+import os
+
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(THIS_FOLDER + '/../src/DatabaseLayer')
+sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/handlers')
+
 from SignUpHandler    import SignUpHandler
 from LoginHandler     import LoginHandler
 from DatabaseAccessor import DatabaseAccessor
@@ -11,83 +15,67 @@ signUpHandler = SignUpHandler()
 loginHandler = LoginHandler()
 DBA = DatabaseAccessor()
 
-RESPONSE_STRING = 0
-RESPONSE_CODE   = 1
-
 def test_handleUserLogin():
     DBA.createConnection()
     DBA.clearDatabase()
 
     # success test login
-    signUpHandler.handleUserSignUp('fakename1', 'password123')
-    resultPackage = loginHandler.handleUserLogin('fakename1', 'password123')
-    assert resultPackage != None
-    assert resultPackage[RESPONSE_CODE] == 202
-    userData = jwt.decode(resultPackage[RESPONSE_STRING], 'fake_secret_key', algorithms=['HS256'])
-    assert 'username' in userData
-    assert 'fakename1' in userData.values()
+    signUpHandler.handleUserSignUp('fake@aol.ca', 'password123')
+    response = loginHandler.handleUserLogin('fake@aol.ca', 'password123')
+    assert response != None
+    assert response['response code'] == 202
+    userData = jwt.decode(response['response string'], 'fake_secret_key', algorithms=['HS256'])
+    assert 'email' in userData
+    assert 'fake@aol.ca' in userData.values()
     assert 'user id' in userData
 
     # success test login
-    signUpHandler.handleUserSignUp('fakename2', 'password345')
-    resultPackage = loginHandler.handleUserLogin('fakename2', 'password345')
-    assert resultPackage != None
-    assert resultPackage[RESPONSE_CODE] == 202
-    userData = jwt.decode(resultPackage[RESPONSE_STRING], 'fake_secret_key', algorithms=['HS256'])
-    assert 'username' in userData
-    assert 'fakename2' in userData.values()
+    signUpHandler.handleUserSignUp('a@aol.ca', 'password345')
+    response = loginHandler.handleUserLogin('a@aol.ca', 'password345')
+    assert response != None
+    assert response['response code'] == 202
+    userData = jwt.decode(response['response string'], 'fake_secret_key', algorithms=['HS256'])
+    assert 'email' in userData
+    assert 'a@aol.ca' in userData.values()
     assert 'user id' in userData
 
     # fail test login with wrong password
-    signUpHandler.handleUserSignUp('fakename3', 'password567')
-    resultPackage = loginHandler.handleUserLogin('fakename3', 'password000')
-    assert resultPackage[RESPONSE_STRING] == "username or password bad"
-    assert resultPackage[RESPONSE_CODE] == 401
+    signUpHandler.handleUserSignUp('fake@aol.com', 'password567')
+    response = loginHandler.handleUserLogin('fake@aol.com', 'password000')
+    assert response['response string'] == "email or password wrong"
+    assert response['response code'] == 401
 
-    # fail test login with non-existent username
-    signUpHandler.handleUserSignUp('fakename4', 'password789')
-    resultPackage = loginHandler.handleUserLogin('fakename0', 'password789')
-    assert resultPackage[RESPONSE_STRING] == "username or password bad"
-    assert resultPackage[RESPONSE_CODE] == 401
+    # fail test login with non-existent email
+    signUpHandler.handleUserSignUp('real@aol.com', 'password789')
+    response = loginHandler.handleUserLogin('faker@aol.com', 'password789')
+    assert response['response string'] == "email or password wrong"
+    assert response['response code'] == 401
 
-    # fail test login with empty username & password strings
-    resultPackage = loginHandler.handleUserLogin('', '')
-    assert resultPackage[RESPONSE_STRING] == 'username empty'
-    assert resultPackage[RESPONSE_CODE] == 400
+    # fail test login with empty email & password strings
+    response = loginHandler.handleUserLogin('', '')
+    assert response['response string'] == 'email empty'
+    assert response['response code'] == 400
 
+    response = loginHandler.handleUserLogin('fakename4', '')
+    assert response['response string'] == 'password empty'
+    assert response['response code'] == 400
 
-    resultPackage = loginHandler.handleUserLogin('fakename4', '')
-    assert resultPackage[RESPONSE_STRING] == 'password empty'
-    assert resultPackage[RESPONSE_CODE] == 400
+    response = loginHandler.handleUserLogin('', 'password345')
+    assert response['response string'] == 'email empty'
+    assert response['response code'] == 400
 
-    resultPackage = loginHandler.handleUserLogin('', 'password345')
-    assert resultPackage[RESPONSE_STRING] == 'username empty'
-    assert resultPackage[RESPONSE_CODE] == 400
+    # fail test login with null email & password
+    response = loginHandler.handleUserLogin(None, None)
+    assert response['response string'] == 'email null'
+    assert response['response code'] == 400
 
-    # fail test login with null username & password
-    resultPackage = loginHandler.handleUserLogin(None, None)
-    assert resultPackage[RESPONSE_STRING] == 'username null'
-    assert resultPackage[RESPONSE_CODE] == 400
+    response = loginHandler.handleUserLogin('fakename4', None)
+    assert response['response string'] == 'password null'
+    assert response['response code'] == 400
 
-    resultPackage = loginHandler.handleUserLogin('fakename4', None)
-    assert resultPackage[RESPONSE_STRING] == 'password null'
-    assert resultPackage[RESPONSE_CODE] == 400
+    response = loginHandler.handleUserLogin(None, 'password345')
+    assert response['response string'] == 'email null'
+    assert response['response code'] == 400
 
-    resultPackage = loginHandler.handleUserLogin(None, 'password345')
-    assert resultPackage[RESPONSE_STRING] == 'username null'
-    assert resultPackage[RESPONSE_CODE] == 400
-
-    DBA.clearDatabase()
-    DBA.closeConnection()
-
-def test_getUser():
-    DBA.createConnection()
-    user = loginHandler.getUser('username1', 'password1')
-    assert user.getUsername() == 'username1'
-    assert user.getTextPassword() == 'password1'
-    assert user.getHashedPassword() == None
-    assert user.getUserId() == None
-
-    del user
     DBA.clearDatabase()
     DBA.closeConnection()

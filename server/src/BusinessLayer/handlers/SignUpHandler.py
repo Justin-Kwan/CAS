@@ -1,7 +1,11 @@
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/models')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/DataBaseLayer')
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer')
+import os
+
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(THIS_FOLDER + '/../src/DatabaseLayer')
+sys.path.append(THIS_FOLDER + '/../src/BusinessLayer')
+sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/models')
+
 from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor
 from User             import User
@@ -15,38 +19,48 @@ DBA            = DatabaseAccessor()
 #   201 - Created Signup
 class SignUpHandler():
 
-    def handleUserSignUp(self, username, password):
+    def getJsonResponse(self, responseString, responseCode):
+        return {
+            'response string': responseString,
+            'response code': responseCode
+        }
 
-        resultOfNullFieldCheck = inputValidator.checkInputNull(username, password)
-        if resultOfNullFieldCheck != "username & password not null":
-            return (resultOfNullFieldCheck, 400)
+    def handleUserSignUp(self, email, password):
 
-        user = self.getUser(str(username.lower()), str(password))
+        resultOfNullFieldCheck = inputValidator.checkInputNull(email, password)
+        if resultOfNullFieldCheck != "email & password not null":
+            return self.getJsonResponse(resultOfNullFieldCheck, 400)
+
+        user = self.getUser(str(email.lower()), str(password))
 
         resultOfEmptyFieldCheck = inputValidator.checkInputEmpty(user)
-        if resultOfEmptyFieldCheck != "username & password not empty":
-            return (resultOfEmptyFieldCheck, 400)
+        if resultOfEmptyFieldCheck != "email & password not empty":
+            return self.getJsonResponse(resultOfEmptyFieldCheck, 400)
 
-        resultOfInputLengthCheck = inputValidator.checkInputLength(user)
-        if resultOfInputLengthCheck != "username & password length ok":
-            return (resultOfInputLengthCheck, 400)
+        resultOfInputLengthCheck = inputValidator.checkInputLength(user, 'email')
+        if resultOfInputLengthCheck != "email length ok":
+            return self.getJsonResponse(resultOfInputLengthCheck, 402)
 
-        isUsernameCharsOk = inputValidator.isUsernameCharsOk(user)
-        if not isUsernameCharsOk:
-            return ("username characters bad", 400)
+        resultOfInputLengthCheck = inputValidator.checkInputLength(user, 'password')
+        if resultOfInputLengthCheck != "password length ok":
+            return self.getJsonResponse(resultOfInputLengthCheck, 402)
+
+        isEmailCharsOk = inputValidator.isEmailCharsOk(user)
+        if not isEmailCharsOk:
+            return self.getJsonResponse("email invalid", 403)
 
         DBA.createConnection()
 
-        doesUsernameExist = DBA.checkForExistingUsername(user)
-        if doesUsernameExist:
-            return ("username already exists", 400)
+        doesEmailExist = DBA.doesEmailExist(user)
+        if doesEmailExist:
+            return self.getJsonResponse("email already exists", 404)
 
         DBA.insertUserInfo(user)
         DBA.closeConnection()
-        return ("signup successful", 201)
+        return self.getJsonResponse("signup successful", 201)
 
-    def getUser(self, username, password):
-        user = User(username, password)
-        user.encryptAndSetPassword(password)
+    def getUser(self, email, textPassword):
+        user = User(email, textPassword)
+        user.encryptAndSetPassword()
         user.generateAndSetUserId()
         return user
