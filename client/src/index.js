@@ -33,16 +33,16 @@ app.use(pagesFolderPath);
 app.use(vendorFolderPath);
 
 app.get('/login', function (req, res) {
-  //if (req.cookies['crypto_cost_session'] != undefined)
-    //res.redirect("http://google.ca/");
-  //else
+  if (req.cookies['crypto_cost_session'] != undefined)
+    res.redirect("http://google.ca/");
+  else
     res.sendFile(loginPage);
 })
 
 app.get('/signup', function (req, res) {
-  //if(req.cookies['crypto_cost_session'] != undefined)
-    //res.redirect("http://google.ca/");
-  //else
+  if(req.cookies['crypto_cost_session'] != undefined)
+    res.redirect("http://google.ca/");
+  else
     res.sendFile(signupPage);
 });
 
