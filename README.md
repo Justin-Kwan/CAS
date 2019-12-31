@@ -31,7 +31,7 @@ A user authentication service for CryptoCost.live that supports user sign-up and
 
 ## JSON Web Token Implementation
 
-Issued JSON web tokens are of the form:
+Issued JSON web token payloads are of the form:
 
         {
           'email': {email string},
