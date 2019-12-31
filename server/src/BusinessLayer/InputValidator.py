@@ -1,5 +1,6 @@
 import re
 import bcrypt
+from validate_email import validate_email
 
 class InputValidator():
 

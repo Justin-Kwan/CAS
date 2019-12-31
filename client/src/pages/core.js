@@ -25,7 +25,7 @@ function makePostRequest(url, formTag, callback) {
   $.ajaxSetup({
     contentType: "application/json; charset=utf-8"
   });
-
+  
   $.post(url, formJson, function(serverResponse) {
     callback(serverResponse['response code'], serverResponse['response string']);
   });
@@ -40,7 +40,8 @@ function determineActionOnResponse(responseCode, responseString) {
       if (responseString === "email empty") {
         replaceComponent("#signup_result_bar", signupEmailEmpty);
         replaceComponent("#login_result_bar", loginEmailEmpty);
-      } else {
+      }
+      else {
         replaceComponent("#signup_result_bar", signupPasswordEmpty);
         replaceComponent("#login_result_bar", loginPasswordEmpty);
       }
@@ -49,7 +50,7 @@ function determineActionOnResponse(responseCode, responseString) {
       replaceComponent("#login_result_bar", emailPasswordWrong);
       break;
     case 402: // bad signup email/password length
-      if (responseString === "email length bad")
+      if(responseString === "email length bad")
         replaceComponent("#signup_result_bar", emailInvalid);
       else
         replaceComponent("#signup_result_bar", passwordBadLength);
