@@ -6,6 +6,7 @@ sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/Busines
 from SignUpHandler import SignUpHandler
 from LoginHandler  import LoginHandler
 from TokenCheckHandler import TokenCheckHandler
+from PasswordResetHandler import PasswordResetHandler
 
 app = Flask(__name__)
 CORS(app)
@@ -39,13 +40,19 @@ def loginSubmit():
         return jsonify(resultPackage)
 
 
-# accepts: { 'crypto_cost_session': {token}, 'new password:' {password} }
+# accepts: { 'crypto_cost_session': {token}, 'new password': {password} }
 # returns: { 'response string:' {Str}, 'response code:' {Int} }
 @app.route("/resetPassword",  methods=['PATCH'])
-def loginSubmit():
+def resetPassword():
     if request.method == 'PATCH':
+        PRH = PasswordResetHandler()
 
+        passwordResetJson = request.get_json()
+        authToken = str(passwordResetJson['crypto_cost_session'])
+        newTextPassword = str(passwordResetJson['new password'])
 
+        response = PRH.handlePasswordReset(authToken, newTextPassword)
+        return jsonify(response)
 
 
 # accepts: json { 'crypto_cost_session': {token} }

@@ -2,9 +2,9 @@ import sys
 import os
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../src/DatabaseLayer')
-sys.path.append(THIS_FOLDER + '/../src/BusinessLayer')
-sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/models')
+sys.path.append(THIS_FOLDER + '/../../DatabaseLayer')
+sys.path.append(THIS_FOLDER + '/../')
+sys.path.append(THIS_FOLDER + '/../models')
 
 from InputValidator   import InputValidator
 from DatabaseAccessor import DatabaseAccessor

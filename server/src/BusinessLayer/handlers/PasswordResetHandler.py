@@ -2,9 +2,9 @@ import sys
 import os
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../../DatabaseLayer')
-sys.path.append(THIS_FOLDER + '/../../BusinessLayer/models')
-sys.path.append(THIS_FOLDER + '/../../BusinessLayer')
+sys.path.append(THIS_FOLDER + '/../.../DatabaseLayer')
+sys.path.append(THIS_FOLDER + '/../')
+sys.path.append(THIS_FOLDER + '/../models')
 
 from DatabaseAccessor import DatabaseAccessor
 from User import User
@@ -44,5 +44,5 @@ class PasswordResetHandler:
         DBA.createConnection()
         DBA.updatePassword(user)
         DBA.closeConnection()
-        
+
         return self.getJsonResponse('password reset successful', 205)
