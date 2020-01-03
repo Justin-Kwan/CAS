@@ -1,23 +1,33 @@
-/**
- * css main style file for all html files
- */
-
- .navbar-brand {
-   color: #FFFFFF;
- }
-/* navbar */
- .navbar-dark {
-     background-color: #48D489;
+.navbar-brand {
+  color: #092557;
+  font-family: PulpDisplay-SemiBold;
+  font-size: xx-large;
+  font-weight: normal;
 }
 
-/* Sign Up title on page */
-/* h1 {
-     color: #48D489;
-     display: inline-block;
-}*/
+#navbar-title {
+  color: #092557;
+  font-family: PulpDisplay-SemiBold;
+  font-size: xx-large;
+}
 
- body {
-     background-color:;
-     color:;
-     font-family:;
+#navbar-home,
+#navbar-login,
+#navbar-signup {
+  color: #092557;
+}
+
+#signup-prompt,
+#login-prompt {
+  font-family: PulpDisplay-SemiBold;
+  color: #092557;
+}
+
+.close {
+  margin: auto;
+}
+
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
 }

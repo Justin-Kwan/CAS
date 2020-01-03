@@ -16,9 +16,11 @@ const PORT       = 5001;
 /**
  * folder paths
  */
-const assetsFolderPath = express.static(path.join(__dirname, './assets'));
+const cssFolderPath = express.static(path.join(__dirname, './assets/css'));
 const pagesFolderPath = express.static(path.join(__dirname, './pages'));
 const vendorFolderPath = express.static(path.join(__dirname, './vendor'));
+const fontsFolderPath = express.static(path.join(__dirname, './assets/pulp-display-font'));
+const imagesFolderPath = express.static(path.join(__dirname, './assets/images'));
 
 /**
  * file paths
@@ -28,9 +30,11 @@ const signupPage = path.join(__dirname, './pages/signup.html');
 
 app.use(cors())
 app.use(cookieParser());
-app.use(assetsFolderPath);
+app.use(cssFolderPath);
 app.use(pagesFolderPath);
 app.use(vendorFolderPath);
+app.use(fontsFolderPath);
+app.use(imagesFolderPath);
 
 app.get('/login', function (req, res) {
   if (req.cookies['crypto_cost_session'] != undefined)

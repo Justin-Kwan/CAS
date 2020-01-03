@@ -7,96 +7,87 @@
   <!--optomize for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script type="text/javascript" src="./jquery.serializejson.min.js"></script>
 
-  <!--bootstrap include-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-  <!--main CSS file link-->
-  <link href="./css/main.css" type="text/css" rel="stylesheet">
+  <link href="./main.css" type="text/css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="pulp-display-semi-bold.css">
 
-  <link rel="shortcut icon" type="image/png" href="./images/favicon.png"/>
+  <link rel="shortcut icon" type="image/png" href="./favicon.png" />
 
   <title>Login - CryptoCost.live</title>
 </head>
 
 <body>
 
-    <!--Navigation Bar-->
-    <nav class="navbar navbar-expand-lg navbar-dark static-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="http://CryptoCost.live">CryptoCost.live <img src="./images/moon.png" width="30"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="http://CryptoCost.live">Home
-                        <span class="sr-only">(current)</span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="http://cryptocost.live/pages/exchanges.html">Exchanges</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="http://cryptocost.live/pages/wallets.html">Wallets</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-
-    <div id="form_and_button" class="row">
-        <div class="col-6">
-            <div class="img">
-                <img src="./images/signup-img.png" style="width:100%; height:100%;">
-            </div>
-        </div>
-
-        <div class="col-6">
-
-            <br></br>
-            <br></br>
-
-            <br></br>
-            <br></br>
-
-            <div id="login_result_bar">
-              <br></br>
-            </div>
-
-            <h1>Login</h1>
-
-            <form id="login_form">
-                <div class="form-group">
-                    <input type="text" class="form-control vcheck col-md-6" name="email" id="email" placeholder="Email">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control vcheck col-md-6" name="password" id="password" placeholder="Password">
-                </div>
-            </form>
-
-            <button type="submit" id="login_submit_button" class="btn btn-primary">Login</button>
-
-        </div>
-
-
+  <!--Navigation Bar-->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="http://CryptoCost.live"><img src="cryptocost-logo.jpg" width="50">
+        <span id="navbar-title">cryptocost</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="http://CryptoCost.live">
+              <span id="navbar-home">Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://cryptocost.live/pages/exchanges.html">
+              <span id="navbar-login">Login</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://cryptocost.live/pages/wallets.html">
+              <span id="navbar-signup">Signup</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
+
+  <br></br>
+  <br></br>
+
+  <!-- login form -->
+  <div id="form_and_button" class="row h-100 justify-content-center align-items-center">
+
+    <span id="login_result_bar">
+      <br></br>
+    </span>
+
+    <span class="container text-center">
+      <h1 id="signup-prompt">Login</h1>
+      <a class="nav-link" href="http://localhost:5001/signup">
+        <h7 id="need-account-text">Need an account?</h7>
+      </a>
+    </span>
+
+    <form id="login_form" class="col-4">
+      <div class="form-group">
+        <input type="text" class="form-control vcheck" name="email" id="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control vcheck" name="password" id="password" placeholder="Password">
+      </div>
+    </form>
+    <div class="container text-center">
+      <button type="submit" id="login_submit_button" class="btn btn-primary">Login</button>
+    </div>
+
+  </div>
 
 </body>
 
 <script src="./core.js"></script>
-
-<style>
-    .img {
-        padding-left: 33%;
-        padding-right: 0%;
-        padding-bottom: 50%;
-        padding-top: 13%;
-    }
-</style>
 
 </html>

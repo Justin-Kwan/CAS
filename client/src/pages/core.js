@@ -25,7 +25,7 @@ function makePostRequest(url, formTag, callback) {
   $.ajaxSetup({
     contentType: "application/json; charset=utf-8"
   });
-  
+
   $.post(url, formJson, function(serverResponse) {
     callback(serverResponse['response code'], serverResponse['response string']);
   });
@@ -88,34 +88,32 @@ function replaceComponent(componentTag, newComponent) {
   $(componentTag).replaceWith(newComponent);
 }
 
-const signupEmailEmpty = `<div id="signup_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, your email is empty!</strong></div>`;
+const signupEmailEmpty = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
+                          <strong>Sorry, your email is empty!</strong></div>`;
 
-const loginEmailEmpty = `<div id="login_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, your email is empty!</strong></div>`;
+const loginEmailEmpty = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
+                         <strong>Sorry, your email is empty!</strong></div>`;
 
-const signupPasswordEmpty = `<div id="signup_result_bar" class="d-inline-flex alert alert-danger">
+const signupPasswordEmpty = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
                              <strong>Sorry, your password is empty!</strong></div>`;
 
-const loginPasswordEmpty = `<div id="login_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, your password is empty!</strong></div>`;
+const loginPasswordEmpty = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
+                            <strong>Sorry, your password is empty!</strong></div>`;
 
-const passwordBadLength = `<div id="signup_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, your password must Be 8 to 65 characters long!</strong>
-                             </div>`;
+const passwordBadLength = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
+                           <strong>Sorry, your password must Be 8 to 65 characters long!</strong>
+                           </div>`;
 
-const emailInvalid = `<div id="signup_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, invalid email!</strong></div>`;
+const emailInvalid = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
+                      <strong>Sorry, invalid email!</strong></div>`;
 
-const emailExists = `<div id="signup_result_bar" class="d-inline-flex alert alert-info">
-                             <strong>Sorry, that email already exists!</strong></div>`;
+const emailExists = `<div id="signup_result_bar" class="col-3 container text-center alert alert-info">
+                     <strong>Sorry, that email already exists!</strong></div>`;
 
-const emailPasswordWrong = `<div id="login_result_bar" class="d-inline-flex alert alert-danger">
-                             <strong>Sorry, incorrect email or password</strong></div>`;
+const emailPasswordWrong = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
+                            <strong>Sorry, incorrect email or password</strong></div>`;
 
-const successfulSignup = `<div id="form_and_button" class="row">\<div class="col-6"><div class="img">
-                             <img src="./images/signup-img.png" style="width:100%; height:100%;">
-                             </div></div><div class="col-6"><br></br><br></br><br></br><br></br><br></br>
-                             <div class="d-inline-flex alert alert-success"><h2>Thanks for signing up</h2>
-                             </div><br></br><a href="http://127.0.0.1:5001/login">
-                             <button class="btn btn-primary">Login</button></a></div></div>`;
+const successfulSignup = `<div id="form_and_button" class="row"><h2 class="col-3 container text-center">
+                          Thanks for signing up</h2></div><br></br><a href="http://127.0.0.1:5001/login">
+                          <div class="container text-center"><button class="btn btn-primary">Login</button>
+                          </div></a></div></div>`;
