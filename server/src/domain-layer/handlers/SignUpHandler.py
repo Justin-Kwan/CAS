@@ -2,8 +2,8 @@ import sys
 import os
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../../DatabaseLayer')
-sys.path.append(THIS_FOLDER + '/../')
+sys.path.append(THIS_FOLDER + '/../../database-layer')
+sys.path.append(THIS_FOLDER + '/../utilities')
 sys.path.append(THIS_FOLDER + '/../models')
 
 from InputValidator   import InputValidator

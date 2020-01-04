@@ -1,8 +1,0 @@
-#Todo:
-
-#Server Refactoring
-
-  - double password confirmation?
-
-
-  - Need Google Captcha

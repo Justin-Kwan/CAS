@@ -6,7 +6,7 @@ class TokenChecker:
 
     def __init__(self):
         self.THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        self.SECRET_KEY_LOCATION = os.path.join(self.THIS_FOLDER, '../resources/token-secret-key.json')
+        self.SECRET_KEY_LOCATION = os.path.join(self.THIS_FOLDER, '../../resources/token-secret-key.json')
         self.SECRET_KEY = None
         self.BAD_TOKEN = False
 

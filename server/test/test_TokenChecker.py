@@ -4,7 +4,7 @@ import os
 import jwt
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../src/BusinessLayer')
+sys.path.append(THIS_FOLDER + '/../src/domain-layer')
 
 from TokenChecker import TokenChecker
 

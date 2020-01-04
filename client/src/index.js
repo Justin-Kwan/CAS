@@ -38,18 +38,18 @@ app.use(imagesFolderPath);
 
 app.get('/login', function (req, res) {
   if (req.cookies['crypto_cost_session'] != undefined)
-    res.redirect("http://google.ca/");
+    res.redirect("http://127.0.0.1:8000/getPortfolio");
   else
     res.sendFile(loginPage);
 })
 
 app.get('/signup', function (req, res) {
   if(req.cookies['crypto_cost_session'] != undefined)
-    res.redirect("http://google.ca/");
+    res.redirect("http://127.0.0.1:8000/getPortfolio");
   else
     res.sendFile(signupPage);
 });
 
 app.listen(PORT, function() {
-  console.log('Frontend server started at ' + LOCAL_HOST + ':' + PORT + '...');
+  console.log('User auth frontend server started at ' + LOCAL_HOST + ':' + PORT + '...');
 });

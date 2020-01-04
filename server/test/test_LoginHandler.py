@@ -3,8 +3,8 @@ import sys
 import os
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../src/DatabaseLayer')
-sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/handlers')
+sys.path.append(THIS_FOLDER + '/../src/database-layer')
+sys.path.append(THIS_FOLDER + '/../src/domain-layer/handlers')
 
 from SignUpHandler    import SignUpHandler
 from LoginHandler     import LoginHandler

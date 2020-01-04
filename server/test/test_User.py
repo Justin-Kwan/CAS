@@ -3,7 +3,7 @@ import sys
 import os
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../src/BusinessLayer/models')
+sys.path.append(THIS_FOLDER + '/../src/domain-layer/models')
 
 from User import User
 import jwt

@@ -6,33 +6,48 @@ const THREE_HRS = 0.125
  * submit button listeners
  */
 $(document).ready(function() {
-
   $('#login_submit_button').click(function() {
-    console.log("submit button clicked");
-    makePostRequest('http://127.0.0.1:5000/loginSubmit', "#login_form", determineActionOnResponse);
+    onLoginSubmit();
   });
 
   $('#signup_submit_button').click(function() {
-    console.log("submit button clicked");
-    makePostRequest('http://127.0.0.1:5000/signupSubmit', "#signup_form", determineActionOnResponse);
+    onSignupSubmit();
   });
-
 });
 
-function makePostRequest(url, formTag, callback) {
+async function onLoginSubmit() {
+  document.getElementById("login_submit_button").disabled = true;
+  console.log("login button clicked");
+  const serverResponse = await makePostRequest('http://127.0.0.1:5000/loginSubmit', "#login_form");
+  determineActionOnResponse(serverResponse['response code'], serverResponse['response string']);
+  document.getElementById("login_submit_button").disabled = false;
+}
+
+async function onSignupSubmit() {
+  document.getElementById("signup_submit_button").disabled = true;
+  console.log("submit button clicked");
+  const serverResponse = await makePostRequest('http://127.0.0.1:5000/signupSubmit', "#signup_form");
+  determineActionOnResponse(serverResponse['response code'], serverResponse['response string']);
+  document.getElementById("signup_submit_button").disabled = false;
+}
+
+function makePostRequest(url, formTag) {
   const formJson = JSON.stringify($(formTag).serializeJSON());
 
   $.ajaxSetup({
     contentType: "application/json; charset=utf-8"
   });
 
-  $.post(url, formJson, function(serverResponse) {
-    callback(serverResponse['response code'], serverResponse['response string']);
+  var promise = new Promise(function(resolve, reject) {
+    $.post(url, formJson, function(serverResponse) {
+      resolve(serverResponse);
+    });
   });
+
+  return promise;
 }
 
 function determineActionOnResponse(responseCode, responseString) {
-
   console.log(responseCode);
 
   switch (responseCode) {
@@ -40,8 +55,7 @@ function determineActionOnResponse(responseCode, responseString) {
       if (responseString === "email empty") {
         replaceComponent("#signup_result_bar", signupEmailEmpty);
         replaceComponent("#login_result_bar", loginEmailEmpty);
-      }
-      else {
+      } else {
         replaceComponent("#signup_result_bar", signupPasswordEmpty);
         replaceComponent("#login_result_bar", loginPasswordEmpty);
       }
@@ -50,7 +64,7 @@ function determineActionOnResponse(responseCode, responseString) {
       replaceComponent("#login_result_bar", emailPasswordWrong);
       break;
     case 402: // bad signup email/password length
-      if(responseString === "email length bad")
+      if (responseString === "email length bad")
         replaceComponent("#signup_result_bar", emailInvalid);
       else
         replaceComponent("#signup_result_bar", passwordBadLength);
@@ -66,10 +80,9 @@ function determineActionOnResponse(responseCode, responseString) {
       break;
     default: // (case 202)
       setTokenCookie(responseString);
-      //redirectToApi("http://google.ca/");
+      redirectToApi("http://127.0.0.1:8000/getPortfolio");
       break;
   }
-
 }
 
 function setTokenCookie(authToken) {
@@ -81,7 +94,7 @@ function setTokenCookie(authToken) {
 }
 
 function redirectToApi(url) {
-  window.location.replace(url);
+  window.location.href = url;
 }
 
 function replaceComponent(componentTag, newComponent) {

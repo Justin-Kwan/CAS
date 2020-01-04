@@ -62,8 +62,14 @@ def authorizeUser():
     if request.method == 'POST':
         tokenCheckHandler = TokenCheckHandler()
 
-        authTokenJson = request.get_json()
+        authTokenJson = request.get_json(force=True)
+
+        print("auth token: ", authTokenJson)
+
         authToken = str(authTokenJson['crypto_cost_session'])
 
         response = tokenCheckHandler.handleTokenCheck(authToken)
+
+        print("is user authed?", response)
+
         return jsonify(response)
