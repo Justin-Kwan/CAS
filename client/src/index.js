@@ -45,12 +45,11 @@ async function login(req, res) {
   console.log("auth" + authToken);
 
   if (authToken == undefined) {
-    console.log("isRequestAuthorized");
+
+    console.log("here");
     res.sendFile(loginPage);
   } else {
     const isRequestAuthorized = await remoteTokenApi.fetchAuthCheck(authToken);
-
-
     if (isRequestAuthorized)
       res.redirect("http://127.0.0.1:8000/getPortfolio");
     else
@@ -60,7 +59,6 @@ async function login(req, res) {
 
 async function signup(req, res) {
   const authToken = req.cookies['crypto_cost_session'];
-
   res.sendFile(signupPage);
 }
 
