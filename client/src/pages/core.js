@@ -20,7 +20,10 @@ async function onLoginSubmit() {
   console.log("login button clicked");
   const serverResponse = await makePostRequest('http://127.0.0.1:5000/loginSubmit', "#login_form");
   determineActionOnResponse(serverResponse['response code'], serverResponse['response string']);
-  document.getElementById("login_submit_button").disabled = false;
+
+  if(serverResponse['response code'] != 202) {
+    document.getElementById("login_submit_button").disabled = false;
+  }
 }
 
 async function onSignupSubmit() {

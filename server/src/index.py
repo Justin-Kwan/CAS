@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
 from flask_cors import CORS
 import sys
-sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/BusinessLayer/handlers')
+sys.path.append('/Users/justinkwan/Documents/WebApps/UserAuth/server/src/domain-layer/handlers')
 from SignUpHandler import SignUpHandler
 from LoginHandler  import LoginHandler
 from TokenCheckHandler import TokenCheckHandler
@@ -61,15 +61,7 @@ def resetPassword():
 def authorizeUser():
     if request.method == 'POST':
         tokenCheckHandler = TokenCheckHandler()
-
         authTokenJson = request.get_json(force=True)
-
-        print("auth token: ", authTokenJson)
-
         authToken = str(authTokenJson['crypto_cost_session'])
-
         response = tokenCheckHandler.handleTokenCheck(authToken)
-
-        print("is user authed?", response)
-
         return jsonify(response)

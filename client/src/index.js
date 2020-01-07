@@ -4,14 +4,15 @@
 
 'use strict';
 
-const express    = require('express');
-const app        = express();
-const cors       = require('cors');
-const path       = require('path');
+const RemoteTokenApi = require('./RemoteTokenApi.js');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const path = require('path');
 var cookieParser = require('cookie-parser');
 
 const LOCAL_HOST = '127.0.0.1';
-const PORT       = 5001;
+const PORT = 5001;
 
 /**
  * folder paths
@@ -36,19 +37,35 @@ app.use(vendorFolderPath);
 app.use(fontsFolderPath);
 app.use(imagesFolderPath);
 
-app.get('/login', function (req, res) {
-  if (req.cookies['crypto_cost_session'] != undefined)
-    res.redirect("http://127.0.0.1:8000/getPortfolio");
-  else
-    res.sendFile(loginPage);
-})
+const remoteTokenApi = new RemoteTokenApi();
 
-app.get('/signup', function (req, res) {
-  if(req.cookies['crypto_cost_session'] != undefined)
-    res.redirect("http://127.0.0.1:8000/getPortfolio");
-  else
-    res.sendFile(signupPage);
-});
+async function login(req, res) {
+  const authToken = req.cookies['crypto_cost_session'];
+
+  console.log("auth" + authToken);
+
+  if (authToken == undefined) {
+    console.log("isRequestAuthorized");
+    res.sendFile(loginPage);
+  } else {
+    const isRequestAuthorized = await remoteTokenApi.fetchAuthCheck(authToken);
+
+
+    if (isRequestAuthorized)
+      res.redirect("http://127.0.0.1:8000/getPortfolio");
+    else
+      res.sendFile(loginPage);
+  }
+}
+
+async function signup(req, res) {
+  const authToken = req.cookies['crypto_cost_session'];
+
+  res.sendFile(signupPage);
+}
+
+app.get('/signup', signup);
+app.get('/login', login);
 
 app.listen(PORT, function() {
   console.log('User auth frontend server started at ' + LOCAL_HOST + ':' + PORT + '...');
