@@ -41,24 +41,20 @@ const remoteTokenApi = new RemoteTokenApi();
 
 async function login(req, res) {
   const authToken = req.cookies['crypto_cost_session'];
+  const isRequestIllegal = authToken == null || await remoteTokenApi.fetchAuthCheck(authToken) === false;
 
-  console.log("auth" + authToken);
+  console.log("TOKEN at login: " + authToken);
+  console.log("REQUEST illegal l: " + isRequestIllegal);
 
-  if (authToken == undefined) {
-
-    console.log("here");
+  if (isRequestIllegal) {
+    res.setHeader('Cache-Control', 'no-cache, no-store'); // Added no-store
     res.sendFile(loginPage);
   } else {
-    const isRequestAuthorized = await remoteTokenApi.fetchAuthCheck(authToken);
-    if (isRequestAuthorized)
-      res.redirect("http://127.0.0.1:8000/getPortfolio");
-    else
-      res.sendFile(loginPage);
+    res.redirect("http://127.0.0.1:8000/getPortfolio");
   }
 }
 
 async function signup(req, res) {
-  const authToken = req.cookies['crypto_cost_session'];
   res.sendFile(signupPage);
 }
 
@@ -67,4 +63,4 @@ app.get('/login', login);
 
 app.listen(PORT, function() {
   console.log('User auth frontend server started at ' + LOCAL_HOST + ':' + PORT + '...');
-});
+})

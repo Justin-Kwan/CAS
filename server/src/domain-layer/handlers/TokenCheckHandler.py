@@ -2,7 +2,7 @@ import os
 import sys
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(THIS_FOLDER + '/../.../database-layer')
+sys.path.append(THIS_FOLDER + '/../../database-layer')
 sys.path.append(THIS_FOLDER + '/../utilities')
 sys.path.append(THIS_FOLDER + '/../models')
 

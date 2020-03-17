@@ -20,10 +20,11 @@
   <title>Sign Up - CryptoCost.live</title>
 </head>
 
-<body>
+<body style="background-color:#524BE3;">
+  <!-- #5F9FDE -->
 
   <!--Navigation Bar-->
-  <nav class="navbar navbar-expand-lg navbar-light">
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color:white;">
     <div class="container-fluid">
       <a class="navbar-brand" href="http://CryptoCost.live"><img src="cryptocost-logo.jpg" width="50">
         <span id="navbar-title">cryptocost</span>
@@ -39,12 +40,12 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="http://cryptocost.live/pages/exchanges.html">
+            <a class="nav-link" href="http://cryptocost.live/login">
               <span id="navbar-login">Login</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="http://cryptocost.live/pages/wallets.html">
+            <a class="nav-link" href="http://cryptocost.live/signup">
               <span id="navbar-signup">Signup</span>
             </a>
           </li>
@@ -58,30 +59,35 @@
 
 
   <!-- signup form -->
-  <div id="form_and_button" class="row h-100 justify-content-center align-items-center">
+  <div id="center-card" class="row h-100 justify-content-center align-items-center">
 
-    <span id="signup_result_bar">
-      <br></br>
-    </span>
+    <!-- Card-->
+    <div class="shadow-lg p-5 mb-5 bg-white rounded" style="width: 28rem;">
+      <span class="container text-center">
+        <h1 id="signup-prompt">Signup</h1>
+        <h7>Start tracking your crypto-currency assets live!</h7>
+        <a class="nav-link" href="http://localhost:5001/login">
+          <h7 id="have-account-text">Have an account?</h7>
+        </a>
+      </span>
+      <span id="signup_result_bar"></span>
 
-    <span class="container text-center">
-      <h1 id="signup-prompt">Signup</h1>
-      <h7>Start tracking your crypto-currency assets live!</h7>
-      <a class="nav-link" href="http://localhost:5001/login">
-        <h7 "have-account-text">Have an account?</h7>
-      </a>
-    </span>
+      <span id="form_and_button">
 
-    <form id="signup_form" class="col-4">
-      <div class="form-group">
-        <input type="text" class="form-control vcheck" name="email" id="email" placeholder="Email">
+      <form id="signup_form" class="col-xs-4">
+        <div class="form-group">
+          <input type="text" class="form-control vcheck" name="email" id="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control vcheck" name="password" id="password" placeholder="Create a Password">
+        </div>
+      </form>
+
+      <div class="container text-center">
+        <button type="submit" id="signup_submit_button" class="btn btn-primary">Create Your Portfolio</button>
       </div>
-      <div class="form-group">
-        <input type="password" class="form-control vcheck" name="password" id="password" placeholder="Create a Password">
-      </div>
-    </form>
-    <div class="container text-center">
-      <button type="submit" id="signup_submit_button" class="btn btn-primary">Signup</button>
+
+    </span>
     </div>
 
   </div>

@@ -104,32 +104,31 @@ function replaceComponent(componentTag, newComponent) {
   $(componentTag).replaceWith(newComponent);
 }
 
-const signupEmailEmpty = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
-                          <strong>Sorry, your email is empty!</strong></div>`;
+const signupEmailEmpty = `<div id="signup_result_bar" class="col-xs-4 container text-center alert-danger">
+                          Please enter your email address</div>`;
 
-const loginEmailEmpty = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
-                         <strong>Sorry, your email is empty!</strong></div>`;
+const loginEmailEmpty = `<div id="login_result_bar" class="col-xs-4 container text-center alert-danger">
+                         Please enter your email address</div>`;
 
-const signupPasswordEmpty = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
-                             <strong>Sorry, your password is empty!</strong></div>`;
+const signupPasswordEmpty = `<div id="signup_result_bar" class="col-xs-4 container text-center alert-danger">
+                          Please choose a password</div>`;
 
-const loginPasswordEmpty = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
-                            <strong>Sorry, your password is empty!</strong></div>`;
+const loginPasswordEmpty = `<div id="login_result_bar" class="col-xs-4 container text-center alert-danger">
+                            Please enter your password</div>`;
 
-const passwordBadLength = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
-                           <strong>Sorry, your password must Be 8 to 65 characters long!</strong>
-                           </div>`;
+const passwordBadLength = `<div id="signup_result_bar" class="col-xs-4 container text-center alert-danger">
+                           Your password should be 8 to 65 characters long</div>`;
 
-const emailInvalid = `<div id="signup_result_bar" class="col-3 container text-center alert alert-danger">
-                      <strong>Sorry, invalid email!</strong></div>`;
+const emailInvalid = `<div id="signup_result_bar" class="col-xs-4 container text-center alert-danger">
+                      Please enter a valid email address</div>`;
 
-const emailExists = `<div id="signup_result_bar" class="col-3 container text-center alert alert-info">
-                     <strong>Sorry, that email already exists!</strong></div>`;
+const emailExists = `<div id="signup_result_bar" class="col-xs-4 container text-center alert-info">
+                     Please choose another email</div>`;
 
-const emailPasswordWrong = `<div id="login_result_bar" class="col-3 container text-center alert alert-danger">
-                            <strong>Sorry, incorrect email or password</strong></div>`;
+const emailPasswordWrong = `<div id="login_result_bar" class="col-xs-4 container text-center alert-danger">
+                            Sorry, incorrect email or password</div>`;
 
-const successfulSignup = `<div id="form_and_button" class="row"><h2 class="col-3 container text-center">
-                          Thanks for signing up</h2></div><br></br><a href="http://127.0.0.1:5001/login">
+const successfulSignup = `<div id="sigup_result_bar" class="col-xs-4 container text-center alert-success">
+                          Thanks for signing up!</div><br></br><a href="http://127.0.0.1:5001/login">
                           <div class="container text-center"><button class="btn btn-primary">Login</button>
-                          </div></a></div></div>`;
+                          </div></a>`;
