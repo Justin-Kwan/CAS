@@ -43,9 +43,6 @@ async function login(req, res) {
   const authToken = req.cookies['crypto_cost_session'];
   const isRequestIllegal = authToken == null || await remoteTokenApi.fetchAuthCheck(authToken) === false;
 
-  console.log("TOKEN at login: " + authToken);
-  console.log("REQUEST illegal l: " + isRequestIllegal);
-
   if (isRequestIllegal) {
     res.setHeader('Cache-Control', 'no-cache, no-store'); // Added no-store
     res.sendFile(loginPage);
