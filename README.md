@@ -1,5 +1,5 @@
-# User-Authentication
-A user authentication service for CryptoCost.live that supports user sign-up and login &amp; token validation, built with Python Flask
+# Central-Authorization-Service
+A generic central authentication service (CAS) that supports user sign-up and login &amp; and request validation, built with Python Flask and JWT
 
 ## Available API Routes
 
