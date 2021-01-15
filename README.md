@@ -9,25 +9,25 @@ A generic central authentication service (CAS) that supports user sign-up and lo
 
         HTTP Request Type: POST
         Accepts (JSON): { 'email': {email string}, 'password': {password string} }
-        Returns (JSON): { 'response string': {response string}, 'response code': {integer} }
+        Returns (JSON): { 'response': {string}, 'status': {integer} }
 
 ### localhost:5000/loginSubmit
 
         HTTP Request Type: POST
         Accepts (JSON): { 'email': {email string}, 'password': {password string} }
-        Returns (JSON): { 'response string': {response string (on error) or token (on success)}, 'response code': {integer} }
+        Returns (JSON): { 'token': {string}, 'status': {integer} }
 
 ### localhost:5000/resetPassword
 
         HTTP Request Type: PATCH
         Accepts (JSON): { 'crypto_cost_session': {token string}, 'new password': {password string} }
-        Returns (JSON): { 'response string': {response string}, 'response code': {integer} }
+        Returns (JSON): { 'response string': {string}, 'response code': {integer} }
 
 ### localhost:5000/authorizeUser
 
         HTTP Request Type: POST
-        Accepts (JSON): { 'crypto_cost_session': {token string} }
-        Returns (JSON): { 'is user authorized': {boolean}, 'user id': {id string}, 'response code:' {integer} }
+        Accepts (JSON): { 'token': {string} }
+        Returns (JSON): { 'is_user_authorized': {boolean}, 'user_id': {string}, 'response code:' {integer} }
 
 ## JSON Web Token Implementation
 
